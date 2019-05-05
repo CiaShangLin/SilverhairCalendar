@@ -1,0 +1,97 @@
+package com.shang.livedata
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import com.google.firebase.database.*
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.shang.livedata.Room.DataEntity
+import com.shang.livedata.Room.DateConverter
+import com.shang.livedata.Room.EventDao
+import java.lang.Exception
+
+class FirebaseLiveData(private var query: DatabaseReference, private var eventDao: EventDao) : LiveData<String>() {
+
+    private val TAG: String = "FirebaseLiveData"
+
+    private var childEventListener = object : ChildEventListener {
+        override fun onCancelled(p0: DatabaseError) {
+            value = "事件取消"
+            Log.v(TAG, "事件取消:${p0.message}")
+        }
+
+        override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            value = "事件移動"
+            Log.v(TAG, "事件移動:${p0.key}")
+        }
+
+        override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            updateToRoom(p0)
+        }
+
+        override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+            //從Firebase寫入到Room不要有ID 因為ID是primaryKey不能重複 而寫入方和被寫入方會發生衝突
+            insertToRoom(p0)
+            Log.v(TAG, "事件新增:${p0.key}")
+        }
+
+        override fun onChildRemoved(p0: DataSnapshot) {
+            deleteToRoom(p0)
+        }
+
+    }
+
+
+    override fun onInactive() {
+        super.onInactive()
+        query.removeEventListener(childEventListener)
+        Log.d(TAG, "$TAG:onInactive")
+    }
+
+    override fun onActive() {
+        super.onActive()
+        query.addChildEventListener(childEventListener)
+        Log.d(TAG, "$TAG:onActive")
+    }
+
+
+    //toRoom給child用
+    private fun insertToRoom(dataSnapshot: DataSnapshot) {
+        var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
+        if (dataEntity != null) {
+            if (!eventDao.checkFirebaseCode(dataEntity.firebaseCode)) {
+                eventDao.insert(dataEntity)
+                value = "事件新增"
+            }
+        }
+    }
+
+    private fun updateToRoom(dataSnapshot: DataSnapshot) {
+        var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
+        if (dataEntity != null) {
+            dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
+            eventDao.update(dataEntity)
+            value = "事件更新"
+        }
+        Log.v(TAG, "事件更新:${dataSnapshot.key}")
+    }
+
+    private fun deleteToRoom(dataSnapshot: DataSnapshot) {
+        var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
+        if (dataEntity != null) {
+            dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode)
+            eventDao.delete(dataEntity)
+            value = "事件移除"
+            Log.v(TAG, "事件移除:${dataSnapshot.key}")
+        }
+    }
+
+    //Firebase轉換成DataEntity
+    private fun dataSnapshotToDataEntity(dataSnapshot: DataSnapshot): DataEntity? {
+        var dataEntity: DataEntity? = dataSnapshot.getValue(DataEntity::class.java)
+        if (dataEntity != null) {
+            dataEntity.calendarDay = dataEntity.stringToCalendarDay(dataEntity.calendarDayString) //轉換CalendarDay
+        }
+        return dataEntity
+    }
+
+}

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "187021104748",
+    "firebase_url": "https://livedata2-f5189.firebaseio.com",
+    "project_id": "livedata2-f5189",
+    "storage_bucket": "livedata2-f5189.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187021104748:android:764df4c2c965b586",
+        "android_client_info": {
+          "package_name": "com.shang.livedata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187021104748-1l48fhjeh1dtv5et1nur23rg49iie9sh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shang.livedata",
+            "certificate_hash": "7eb98a980c07f60fe06e2106e499a9f3b92e6898"
+          }
+        },
+        {
+          "client_id": "187021104748-d7l6p4672dmf1lhnc80ch84u52648jss.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdAMgkPpdB7SCOVFTjXlXETxOmM8L1WQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "187021104748-d7l6p4672dmf1lhnc80ch84u52648jss.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

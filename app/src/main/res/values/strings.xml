@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">LiveData</string>
+
+
+    <string-array name="colorName">
+        <item>藍色</item>
+        <item>紅色</item>
+        <item>綠色</item>
+    </string-array>
+    <string name="title_activity_choice_mode">ChoiceModeActivity</string>
+
+</resources>
