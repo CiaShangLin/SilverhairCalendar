@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_calendar_view.*
 
 import kotlinx.android.synthetic.main.activity_choice_mode.*
 import com.firebase.ui.auth.AuthUI
@@ -29,7 +28,6 @@ class ChoiceModeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choice_mode)
-        setSupportActionBar(toolbar)
 
 
         firebaseAuthRegister()

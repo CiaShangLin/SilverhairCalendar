@@ -13,14 +13,17 @@ import org.jetbrains.anko.toast
 import android.app.TimePickerDialog
 import android.text.format.DateFormat
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.DateConverter
 import com.shang.livedata.ViewModel.DataViewModel
-import kotlinx.android.synthetic.main.activity_calendar_view.*
+
 import kotlinx.android.synthetic.main.activity_main.cal
 import kotlinx.android.synthetic.main.nest_layout.*
 
@@ -73,11 +76,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        //button.setOnClickListener {
+        button.setOnClickListener {
             //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
+            SettingDialog.getInstance().show(supportFragmentManager,SettingDialog.TAG)
             //startActivity(Intent(this,CalendarViewActivity::class.java))
             //startActivity(Intent(this,ChoiceModeActivity::class.java))
-        //}
+        }
 
         model.getFirebaseLiveData().observe(this, object : Observer<String> {
             override fun onChanged(t: String?) {
@@ -93,6 +97,32 @@ class MainActivity : AppCompatActivity() {
             buffer
         }
 
+        appBarLayout.addOnOffsetChangedListener(object :AppBarLayout.OnOffsetChangedListener{
+            override fun onOffsetChanged(appBarLayout: AppBarLayout?, state: Int) {
+                if(state==0){
+                    cal.visibility= View.VISIBLE
+                }else{
+                    cal.visibility=View.INVISIBLE
+                }
+            }
+        })
+
+
+        var set = hashSetOf<CalendarDay>().apply {
+            this.add(CalendarDay.from(2019, 4, 19))
+            this.add(CalendarDay.from(2019, 4, 10))
+            this.add(CalendarDay.from(2019, 4, 5))
+        }
+        cal.addDecorator(
+            MyDayView(
+                this,
+                set,
+                resources.getColor(R.color.primary_dark_material_dark),
+                resources.getDrawable(R.drawable.ic_ellipsis)
+            )
+        )
+
+        mainTb.inflateMenu(R.menu.menu_main)
     }
 }
 

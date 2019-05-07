@@ -16,10 +16,7 @@
                 android:label="@string/title_activity_choice_mode"
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity
-                android:name=".CalendarViewActivity"
-                android:theme="@style/AppTheme2">
-        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

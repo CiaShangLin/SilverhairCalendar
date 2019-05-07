@@ -6,11 +6,11 @@
 
     <ImageView
             android:layout_width="48dp"
-            android:layout_height="48dp" tools:srcCompat="@drawable/ic_user"
+            android:layout_height="48dp"
             android:id="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp" android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar3"/>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar3" app:srcCompat="@drawable/ic_user"/>
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,5 +58,5 @@
             android:id="@+id/toolbar3"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" app:title="Setting"
-            app:logo="@drawable/ic_settings_black_24dp"/>
+            app:navigationIcon="@drawable/ic_settings_black_24dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

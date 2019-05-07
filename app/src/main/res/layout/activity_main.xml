@@ -14,38 +14,36 @@
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true" android:id="@+id/appBarLayout">
         <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleMarginEnd="10dp"
                 app:expandedTitleMarginStart="10dp"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:layout_scrollFlags="scroll|snap"
                 android:drawingCacheQuality="auto"
                 android:fitsSystemWindows="true"
-                app:titleEnabled="false">
+                app:titleEnabled="false" app:contentScrim="@android:color/darker_gray">
             <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:id="@+id/mainTb"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
-                    app:title="銀髮智慧行事曆" app:titleTextColor="@color/fui_bgGoogle"/>
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layout_collapseMode="pin" android:layout_marginTop="?attr/actionBarSize">
+                    app:title="銀髮智慧行事曆" app:titleTextColor="@color/fui_bgGoogle"
+                    app:navigationIcon="@drawable/ic_calendar"/>
 
-                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/cal"
-                        android:visibility="visible">
-                </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
-            </LinearLayout>
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cal"
+                    android:visibility="visible"
+                    android:layout_marginTop="?attr/actionBarSize"
+                    app:mcv_selectionColor="@color/colorPrimaryDark">
+            </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
