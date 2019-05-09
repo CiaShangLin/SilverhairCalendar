@@ -38,13 +38,13 @@ class SettingDialog : DialogFragment() {
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
 
         var settingEntity=dataViewModel.getSetting()
-        settingNameEt.setText(settingEntity.name)
+        nameEt.setText(settingEntity.name)
         settingFirebaseCodeEt.setText(settingEntity.firebaseCode)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.dialog_setting, container, false)
-        var settingNameEt=view.findViewById<EditText>(R.id.settingNameEt)
+        var settingNameEt=view.findViewById<EditText>(R.id.nameEt)
         var settingFirebaseCodeEt=view.findViewById<EditText>(R.id.settingFirebaseCodeEt)
 
 

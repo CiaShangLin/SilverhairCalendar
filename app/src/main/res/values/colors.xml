@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <color name="blue">#00BBFF</color>
+
     <array name="colorArray">
         <item>#008577</item>
         <item>#00574B</item>

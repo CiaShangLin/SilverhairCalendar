@@ -1,6 +1,7 @@
 package com.shang.livedata.Main
 
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.*
@@ -13,6 +14,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.material.appbar.AppBarLayout
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
@@ -70,10 +72,9 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
-            SettingDialog.getInstance().show(supportFragmentManager,
-                SettingDialog.TAG)
-            //startActivity(Intent(this,CalendarViewActivity::class.java))
-            //startActivity(Intent(this,ChoiceModeActivity::class.java))
+            //SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
+
+            startActivity(Intent(this, ChoiceModeActivity::class.java))
         }
 
         model.getFirebaseLiveData().observe(this, object : Observer<String> {

@@ -22,7 +22,7 @@
         <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="姓名" android:id="@+id/settingNameEt"/>
+                android:hint="姓名" android:id="@+id/nameEt"/>
     </com.google.android.material.textfield.TextInputLayout>
     <ImageView
             android:layout_width="48dp"
