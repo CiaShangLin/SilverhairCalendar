@@ -1,4 +1,4 @@
-package com.shang.livedata
+package com.shang.livedata.Dialog
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.shang.livedata.R
 import org.jetbrains.anko.layoutInflater
 
 class ColorSpinnerAdapter : BaseAdapter {

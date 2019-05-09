@@ -1,7 +1,6 @@
-package com.shang.livedata
+package com.shang.livedata.Main
 
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.*
@@ -10,25 +9,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
-import android.app.TimePickerDialog
-import android.text.format.DateFormat
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.FirebaseDatabase
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.shang.livedata.Dialog.SettingDialog
+import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
-import com.shang.livedata.Room.DateConverter
+import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
 
 import kotlinx.android.synthetic.main.activity_main.cal
 import kotlinx.android.synthetic.main.nest_layout.*
-
-import java.time.LocalDateTime
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -78,7 +70,8 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
-            SettingDialog.getInstance().show(supportFragmentManager,SettingDialog.TAG)
+            SettingDialog.getInstance().show(supportFragmentManager,
+                SettingDialog.TAG)
             //startActivity(Intent(this,CalendarViewActivity::class.java))
             //startActivity(Intent(this,ChoiceModeActivity::class.java))
         }
@@ -123,6 +116,25 @@ class MainActivity : AppCompatActivity() {
         )
 
         mainTb.inflateMenu(R.menu.menu_main)
+        mainTb.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.menu_seting ->{
+                    SettingDialog.getInstance().show(supportFragmentManager,
+                        SettingDialog.TAG)
+                }
+            }
+            true
+        }
+        //insertSetting()
+    }
+
+    fun insertSetting(){
+        var settingEntity=SettingEntity()
+        settingEntity.apply {
+            this.name="ShangLin"
+            this.firebaseCode="TO0GbWYZ51d4RW95HZd3boY0mv62"
+        }
+        model.insertSetting(settingEntity)
     }
 }
 

@@ -1,13 +1,10 @@
-package com.shang.livedata
+package com.shang.livedata.Firebase
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.*
-import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.Room.DataEntity
-import com.shang.livedata.Room.DateConverter
 import com.shang.livedata.Room.EventDao
-import java.lang.Exception
 
 class FirebaseLiveData(private var query: DatabaseReference, private var eventDao: EventDao) : LiveData<String>() {
 

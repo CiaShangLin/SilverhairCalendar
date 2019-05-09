@@ -9,7 +9,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:context=".MainActivity">
+        tools:context=".Main.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -22,8 +22,7 @@
                 app:expandedTitleMarginEnd="10dp"
                 app:expandedTitleMarginStart="10dp"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_scrollFlags="scroll|snap"
-                android:drawingCacheQuality="auto"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:fitsSystemWindows="true"
                 app:titleEnabled="false" app:contentScrim="@android:color/darker_gray">
             <androidx.appcompat.widget.Toolbar
@@ -33,8 +32,6 @@
                     app:layout_collapseMode="pin"
                     app:title="銀髮智慧行事曆" app:titleTextColor="@color/fui_bgGoogle"
                     app:navigationIcon="@drawable/ic_calendar"/>
-
-
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

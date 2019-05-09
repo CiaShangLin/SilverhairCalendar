@@ -19,13 +19,21 @@ interface EventDao {
     @Update
     fun update(myDataEntity: DataEntity)
 
-    @Query("SELECT * FROM " + DataEntity.TABLE_NAME +" where calendarDay=:calendarDay")
-    fun getDay(calendarDay:CalendarDay): LiveData<MutableList<DataEntity>>
+    @Query("SELECT * FROM " + DataEntity.TABLE_NAME + " where calendarDay=:calendarDay")
+    fun getDay(calendarDay: CalendarDay): LiveData<MutableList<DataEntity>>
 
-    @Query("SELECT * FROM "+DataEntity.TABLE_NAME+" where firebaseCode=:firebaseCode")
-    fun checkFirebaseCode(firebaseCode:String):Boolean
+    @Query("SELECT * FROM " + DataEntity.TABLE_NAME + " where firebaseCode=:firebaseCode")
+    fun checkFirebaseCode(firebaseCode: String): Boolean
 
-    @Query("SELECT id FROM "+DataEntity.TABLE_NAME+" where firebaseCode=:firebaseCode")
-    fun getFirebaseCodeToId(firebaseCode:String):Int
+    @Query("SELECT id FROM " + DataEntity.TABLE_NAME + " where firebaseCode=:firebaseCode")
+    fun getFirebaseCodeToId(firebaseCode: String): Int
+
+
+    //SettingTable
+    @Query("SELECT * FROM " + SettingEntity.TABLE_NAME)
+    fun getSetting():SettingEntity
+
+    @Insert
+    fun insertSetting(settingEntity: SettingEntity)
 
 }

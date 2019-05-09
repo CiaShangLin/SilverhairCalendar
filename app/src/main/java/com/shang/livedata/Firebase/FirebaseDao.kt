@@ -1,4 +1,4 @@
-package com.shang.livedata
+package com.shang.livedata.Firebase
 
 import com.google.firebase.database.FirebaseDatabase
 import com.shang.livedata.Room.DataEntity

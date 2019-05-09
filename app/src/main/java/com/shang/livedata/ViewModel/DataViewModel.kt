@@ -4,9 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.shang.livedata.FirebaseLiveData
+import com.shang.livedata.Firebase.FirebaseLiveData
 import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
+import com.shang.livedata.Room.SettingEntity
 
 class DataViewModel: AndroidViewModel{
     private lateinit var repository: DataRepository
@@ -47,6 +48,16 @@ class DataViewModel: AndroidViewModel{
 
     fun updateFirebase(dataEntity: DataEntity){
         repository.updateFirebase(dataEntity)
+    }
+
+
+    //Setting
+    fun insertSetting(settingEntity: SettingEntity){
+        repository.insertSetting(settingEntity)
+    }
+
+    fun getSetting():SettingEntity{
+        return repository.getSetting()
     }
 
 

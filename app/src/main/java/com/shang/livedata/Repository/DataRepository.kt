@@ -3,13 +3,13 @@ package com.shang.livedata.Repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
-import com.google.firebase.database.FirebaseDatabase
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.shang.livedata.FirebaseDao
-import com.shang.livedata.FirebaseLiveData
+import com.shang.livedata.Firebase.FirebaseDao
+import com.shang.livedata.Firebase.FirebaseLiveData
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.EventDao
 import com.shang.livedata.Room.RoomDatabase
+import com.shang.livedata.Room.SettingEntity
 
 class DataRepository {
 
@@ -49,16 +49,26 @@ class DataRepository {
         return firebaseDao.getFirebaseData()
     }
 
-    fun pushFirebase(dataEntity: DataEntity){
+    fun pushFirebase(dataEntity: DataEntity) {
         firebaseDao.push(dataEntity)
     }
 
-    fun updateFirebase(dataEntity: DataEntity){
+    fun updateFirebase(dataEntity: DataEntity) {
         firebaseDao.update(dataEntity)
     }
 
-    fun deleteFirebase(dataEntity: DataEntity){
+    fun deleteFirebase(dataEntity: DataEntity) {
         firebaseDao.delete(dataEntity)
+    }
+
+
+    //Setting
+    fun insertSetting(settingEntity: SettingEntity) {
+        eventDao.insertSetting(settingEntity)
+    }
+
+    fun getSetting(): SettingEntity {
+        return eventDao.getSetting()
     }
 
 

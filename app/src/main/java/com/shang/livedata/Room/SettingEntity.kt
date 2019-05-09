@@ -10,7 +10,7 @@ class SettingEntity {
         const val TABLE_NAME = "SettingTable"
     }
 
-    var name: String = ""
+    var name: String = "自己"
 
     @PrimaryKey
     var firebaseCode: String = ""

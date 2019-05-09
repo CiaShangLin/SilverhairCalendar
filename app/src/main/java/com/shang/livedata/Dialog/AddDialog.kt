@@ -1,14 +1,14 @@
-package com.shang.livedata
+package com.shang.livedata.Dialog
 
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
@@ -46,11 +46,11 @@ class AddDialog : DialogFragment() {
         var view = inflater.inflate(R.layout.dialog_add, container, false)
         var eventEt = view.findViewById<EditText>(R.id.eventEt)
         var timeEt = view.findViewById<EditText>(R.id.timeEt)
-        var nameEt = view.findViewById<EditText>(R.id.nameEt)
+        var nameEt = view.findViewById<EditText>(R.id.settingNameEt)
         var colorSp = view.findViewById<Spinner>(R.id.colorSp)
         var addBt = view.findViewById<Button>(R.id.addBt)
 
-        colorSp.adapter=ColorSpinnerAdapter(context!!)
+        colorSp.adapter= ColorSpinnerAdapter(context!!)
 
         return view
     }
