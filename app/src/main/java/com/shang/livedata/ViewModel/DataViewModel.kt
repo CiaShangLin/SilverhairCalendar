@@ -18,6 +18,7 @@ class DataViewModel: AndroidViewModel{
         allDataEntity=repository.getAllData()
     }
 
+    //EventDao
     fun getAllDataEntity():LiveData<MutableList<DataEntity>>{
         return repository.getAllData()
     }
@@ -38,6 +39,9 @@ class DataViewModel: AndroidViewModel{
         return repository.getDay(calendarDay)
     }
 
+
+
+    //FirebaseDao
     fun getFirebaseLiveData(): FirebaseLiveData {
         return repository.getFirebaseLiveData()
     }

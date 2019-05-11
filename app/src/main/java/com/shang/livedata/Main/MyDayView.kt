@@ -7,10 +7,9 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade
 import android.content.Context
 
 
-class MyDayView(var context: Context, var hashMap: HashSet<CalendarDay>, var color:Int, var drawable: Drawable) :DayViewDecorator {
+class MyDayView(var context: Context, var list: List<CalendarDay>, var color:Int, var drawable: Drawable) :DayViewDecorator {
     override fun shouldDecorate(day: CalendarDay?): Boolean {
-        return hashMap.contains(day)
-
+        return list.contains(day)
     }
 
     override fun decorate(view: DayViewFacade?) {

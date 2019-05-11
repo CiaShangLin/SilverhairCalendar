@@ -5,10 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
+import com.shang.livedata.ViewModel.DataViewModel
+import org.jetbrains.anko.toast
 
 class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -62,6 +65,22 @@ class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBAC
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var idTv = itemView.findViewById<TextView>(R.id.idTv)
         var nameTv = itemView.findViewById<TextView>(R.id.nameTv)
+    }
+
+    fun getSimpleCallback(model:DataViewModel):ItemTouchHelper.SimpleCallback{
+        var simpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                model.delete(getDataAt(viewHolder.position))
+            }
+        }
+        return simpleCallback
     }
 
 }

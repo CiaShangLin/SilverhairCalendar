@@ -25,6 +25,7 @@ class DataRepository {
         firebaseDao = FirebaseDao(eventDao)
     }
 
+    //EventDao
     fun getAllData(): LiveData<MutableList<DataEntity>> {
         return eventDao.getMyDataEntity()
     }
@@ -42,9 +43,11 @@ class DataRepository {
     }
 
     fun getDay(calendarDay: CalendarDay): LiveData<MutableList<DataEntity>> {
-        return eventDao.getDay(calendarDay)
+        return eventDao.getDayToDataEntity(calendarDay)
     }
 
+
+    //FirebaseDao
     fun getFirebaseLiveData(): FirebaseLiveData {
         return firebaseDao.getFirebaseData()
     }

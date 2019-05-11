@@ -14,7 +14,8 @@
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true" android:id="@+id/appBarLayout">
+            android:fitsSystemWindows="true" android:id="@+id/appBarLayout"
+            android:background="@android:color/darker_gray">
         <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
@@ -22,7 +23,7 @@
                 app:expandedTitleMarginEnd="10dp"
                 app:expandedTitleMarginStart="10dp"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 android:fitsSystemWindows="true"
                 app:titleEnabled="false" app:contentScrim="@android:color/darker_gray">
             <androidx.appcompat.widget.Toolbar
@@ -35,7 +36,7 @@
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cal"
+                    android:id="@+id/calendarView"
                     android:visibility="visible"
                     android:layout_marginTop="?attr/actionBarSize"
                     app:mcv_selectionColor="@color/colorPrimaryDark">

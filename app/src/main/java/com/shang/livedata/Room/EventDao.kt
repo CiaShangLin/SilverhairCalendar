@@ -7,6 +7,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 @Dao
 interface EventDao {
 
+    //MY_DATA_TABLE
     @Query("SELECT * FROM " + DataEntity.TABLE_NAME)
     fun getMyDataEntity(): LiveData<MutableList<DataEntity>>
 
@@ -20,13 +21,14 @@ interface EventDao {
     fun update(myDataEntity: DataEntity)
 
     @Query("SELECT * FROM " + DataEntity.TABLE_NAME + " where calendarDay=:calendarDay")
-    fun getDay(calendarDay: CalendarDay): LiveData<MutableList<DataEntity>>
+    fun getDayToDataEntity(calendarDay: CalendarDay): LiveData<MutableList<DataEntity>>
 
     @Query("SELECT * FROM " + DataEntity.TABLE_NAME + " where firebaseCode=:firebaseCode")
     fun checkFirebaseCode(firebaseCode: String): Boolean
 
     @Query("SELECT id FROM " + DataEntity.TABLE_NAME + " where firebaseCode=:firebaseCode")
     fun getFirebaseCodeToId(firebaseCode: String): Int
+
 
 
     //SettingTable
