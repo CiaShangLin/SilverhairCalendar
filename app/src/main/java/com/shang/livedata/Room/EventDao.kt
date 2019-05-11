@@ -35,7 +35,10 @@ interface EventDao {
     @Query("SELECT * FROM " + SettingEntity.TABLE_NAME)
     fun getSetting():SettingEntity
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertSetting(settingEntity: SettingEntity)
+
+    @Update
+    fun updateSetting(settingEntity: SettingEntity)
 
 }

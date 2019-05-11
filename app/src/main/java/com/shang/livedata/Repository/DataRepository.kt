@@ -74,5 +74,9 @@ class DataRepository {
         return eventDao.getSetting()
     }
 
+    fun updateSetting(settingEntity: SettingEntity){
+        eventDao.updateSetting(settingEntity)
+    }
+
 
 }

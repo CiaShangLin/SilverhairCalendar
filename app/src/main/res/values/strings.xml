@@ -8,5 +8,6 @@
         <item>綠色</item>
     </string-array>
     <string name="title_activity_choice_mode">ChoiceModeActivity</string>
+    <string name="title_activity_family">FamilyActivity</string>
 
 </resources>

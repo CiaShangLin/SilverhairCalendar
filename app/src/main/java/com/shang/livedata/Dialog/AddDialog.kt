@@ -51,7 +51,7 @@ class AddDialog : DialogFragment() {
         var view = inflater.inflate(R.layout.dialog_add, container, false)
         var eventEt = view.findViewById<EditText>(R.id.eventEt)
         var timeEt = view.findViewById<EditText>(R.id.timeEt)
-        var nameEt = view.findViewById<EditText>(R.id.nameEt)
+        var nameEt = view.findViewById<EditText>(R.id.settingNameEt)
         var colorSp = view.findViewById<Spinner>(R.id.colorSp)
         var addBt = view.findViewById<Button>(R.id.addBt)
 
@@ -63,7 +63,7 @@ class AddDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        nameEt.setText(settingEntity.name)
+        settingNameEt.setText(settingEntity.name)
 
 
         timeEt.setOnTouchListener { view, motionEvent ->
@@ -91,7 +91,7 @@ class AddDialog : DialogFragment() {
                 this.calendarDay
                 this.calendarDayString
                 this.firebaseCode = settingEntity.firebaseCode
-                this.name = nameEt.text.toString()
+                this.name = settingNameEt.text.toString()
             }
             dataViewModel.insert(dataEntity)
         }

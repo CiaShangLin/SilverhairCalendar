@@ -10,12 +10,10 @@ import kotlinx.android.synthetic.main.activity_choice_mode.*
 import com.firebase.ui.auth.AuthUI
 import java.util.*
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
-import com.shang.livedata.Main.MainActivity
 import com.shang.livedata.R
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
@@ -28,15 +26,17 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var model: DataViewModel
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val RC_SIGN_IN = 1
-    private var type = 1
+
+    companion object {
+        val TYPE: String = "TYPE"
+        val MainActivityType: Int = 1
+        val FamilyActivityType: Int = 2
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choice_mode)
-
-        model = ViewModelProviders.of(this).get(DataViewModel::class.java)
-
-
 
         familyImgBt.setOnClickListener(this)
         avatarImgBt.setOnClickListener(this)
@@ -45,41 +45,39 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.avatarImgBt -> {
-                type = 1
-                firebaseAuthRegister(1)
+                firebaseAuthRegister(MainActivityType)
             }
             R.id.familyImgBt -> {
-                type = 2
-                firebaseAuthRegister(2)
+                firebaseAuthRegister(FamilyActivityType)
             }
         }
     }
 
     private fun firebaseAuthRegister(type: Int) {
-        if (firebaseAuth.currentUser == null) {
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(
-                        Arrays.asList(
-                            AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build()
-                        )
-                    )
-                    .build(),
-                RC_SIGN_IN
-            )
-        } else {
-            gotoActivity(type)
-        }
-    }
-
-    fun gotoActivity(type: Int) {
         when (type) {
-            1 -> {
-                startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java))
+            MainActivityType -> {
+                if (firebaseAuth.currentUser == null) {
+                    startActivityForResult(
+                        AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(
+                                Arrays.asList(
+                                    AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build()
+                                )
+                            )
+                            .build(),
+                        RC_SIGN_IN
+                    )
+                } else {
+                    startActivity(Intent(this@ChoiceModeActivity, MainActivityType::class.java).apply {
+                        this.putExtra(TYPE, MainActivityType)
+                    })
+                }
             }
-            2 -> {
-                startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java))
+            FamilyActivityType -> {
+                startActivity(Intent(this@ChoiceModeActivity, FamilyActivityType::class.java).apply {
+                    this.putExtra(TYPE, FamilyActivityType)
+                })
             }
         }
     }
@@ -97,7 +95,9 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
                         this.name = it?.displayName.toString()
                     })
                 }
-                gotoActivity(type)
+                startActivity(Intent(this@ChoiceModeActivity, MainActivityType::class.java).apply {
+                    this.putExtra(TYPE, MainActivityType)
+                })
             } else {
                 if (response == null) {
                     toast("返回選擇畫面")
