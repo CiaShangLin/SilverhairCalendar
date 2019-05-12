@@ -5,16 +5,28 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import android.content.Context
+import com.shang.livedata.R
 
 
-class MyDayView(var context: Context, var list: List<CalendarDay>, var color:Int, var drawable: Drawable) :DayViewDecorator {
+class MyDayView : DayViewDecorator {
+    private var mHashSet = HashSet<CalendarDay>()
+    private lateinit var drawable: Drawable
+    private var color: Int = R.color.blue
+
+    constructor(hashSet: HashSet<CalendarDay>, color: Int, drawable: Drawable) {
+        this.drawable = drawable
+        this.color = color
+        this.mHashSet=hashSet
+    }
+
     override fun shouldDecorate(day: CalendarDay?): Boolean {
-        return list.contains(day)
+        return mHashSet.contains(day)
     }
 
     override fun decorate(view: DayViewFacade?) {
         //view?.addSpan(DotSpan(5f,color))
         view?.setBackgroundDrawable(drawable)
+
         //view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context,android.R.color.black)));
     }
 }

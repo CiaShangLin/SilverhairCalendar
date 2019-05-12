@@ -15,14 +15,12 @@ class DataRepository {
 
     private lateinit var myRoomDatabase: RoomDatabase
     private lateinit var eventDao: EventDao
-    private lateinit var firebaseDao: FirebaseDao
 
     constructor(context: Context) {
         myRoomDatabase = Room.databaseBuilder(context, RoomDatabase::class.java, RoomDatabase.DATABASE_NAME)
             .allowMainThreadQueries()
             .build()
         eventDao = myRoomDatabase.getEventDao()
-        firebaseDao = FirebaseDao(eventDao)
     }
 
     //EventDao
@@ -45,25 +43,6 @@ class DataRepository {
     fun getDay(calendarDay: CalendarDay): LiveData<MutableList<DataEntity>> {
         return eventDao.getDayToDataEntity(calendarDay)
     }
-
-
-    //FirebaseDao
-    fun getFirebaseLiveData(): FirebaseLiveData {
-        return firebaseDao.getFirebaseData()
-    }
-
-    fun pushFirebase(dataEntity: DataEntity) {
-        firebaseDao.push(dataEntity)
-    }
-
-    fun updateFirebase(dataEntity: DataEntity) {
-        firebaseDao.update(dataEntity)
-    }
-
-    fun deleteFirebase(dataEntity: DataEntity) {
-        firebaseDao.delete(dataEntity)
-    }
-
 
     //Setting
     fun insertSetting(settingEntity: SettingEntity) {

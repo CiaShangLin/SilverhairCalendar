@@ -1,7 +1,6 @@
 package com.shang.livedata.Main
 
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +19,7 @@ import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
+import com.shang.livedata.ViewModel.FirebaseViewModel
 
 import kotlinx.android.synthetic.main.activity_main.calendarView
 import kotlinx.android.synthetic.main.nest_layout.*
@@ -27,9 +27,11 @@ import kotlinx.android.synthetic.main.nest_layout.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var model: DataViewModel
+    lateinit var dataViewModel: DataViewModel
+    lateinit var firebaseViewModel: FirebaseViewModel
     lateinit var dataAdapter: DataAdapter
-    private var settingCallback=object :SettingDialog.Callback{
+    lateinit var myDayView:MyDayView
+    private var settingCallback = object : SettingDialog.Callback {
         override fun callback() {
             initModel()
         }
@@ -40,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        model = ViewModelProviders.of(this).get(DataViewModel::class.java)
+        dataViewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
+
         type = intent.getIntExtra(ChoiceModeActivity.TYPE, 1)
 
         //CalendarView
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         calendarView.setSelectedDate(CalendarDay.today())
 
         calendarView.setOnDateChangedListener { widget, date, selected ->
-            model.currentDate.value = date
+            dataViewModel.currentDate.value = date
         }
 
         //RecyclerView
@@ -67,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         saveBt.setOnClickListener {
             //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
             //SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
-            insertFirebase()
+            insertDataEntity()
             //startActivity(Intent(this, ChoiceModeActivity::class.java))
         }
 
@@ -93,14 +96,14 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        when (2) {
+        when (type) {
             ChoiceModeActivity.MainActivityMode -> {
                 initModel()
             }
             ChoiceModeActivity.FamilyActivityMode -> {
-                if (model.getSetting() == null) {
+                if (dataViewModel.getSetting() == null) {
                     SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
-                    Log.d("TAG","沒有Setting")
+                    Log.d("TAG", "沒有Setting")
                 } else {
                     initModel()
                 }
@@ -110,11 +113,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initModel() {
-        Log.d("TAG","initModel")
-        model = ViewModelProviders.of(this).get(DataViewModel::class.java)
-        model.currentDate.observe(this, object : Observer<CalendarDay> {
+        Log.d("TAG", "initModel")
+        firebaseViewModel=ViewModelProviders.of(this).get(FirebaseViewModel::class.java)
+        dataViewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
+
+        dataViewModel.currentDate.observe(this, object : Observer<CalendarDay> {
             override fun onChanged(t: CalendarDay?) {
-                model.getDay(t!!).observe(this@MainActivity,
+                dataViewModel.getDay(t!!).observe(this@MainActivity,
                     object : Observer<MutableList<DataEntity>> {
                         override fun onChanged(t: MutableList<DataEntity>?) {
                             dataAdapter.submitList(t!!)
@@ -123,25 +128,33 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         })
-        model.currentDate.value = calendarView.selectedDate
+        dataViewModel.currentDate.value = calendarView.selectedDate
 
         //Room
-        model.getAllDataEntity().observe(this, object : Observer<MutableList<DataEntity>> {
+        dataViewModel.getAllDataEntity().observe(this, object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
+                Log.d("TAG","DATAVM")
+                dataAdapter.submitList(data.filter { it.calendarDay==calendarView.selectedDate })
+                calendarView.removeDecorators()
                 calendarView.addDecorator(
                     MyDayView(
-                        this@MainActivity,
-                        data.map { it.calendarDay },
+                        data.map { it.calendarDay }.toHashSet(),
                         resources.getColor(R.color.primary_dark_material_dark),
                         resources.getDrawable(R.drawable.ic_ellipsis)
                     )
                 )
+                
+                data.map {
+                    it.calendarDay
+                }.toHashSet().forEach {
+                    Log.d("TAG",it.toString())
+                }
             }
         })
 
         //Firebase
-        if (model.getSetting() != null) {
-            model.getFirebaseLiveData().observe(this, object : Observer<String> {
+        if (dataViewModel.getSetting() != null) {
+            firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
                 override fun onChanged(reslut: String?) {
                     toast(reslut.toString())
                 }
@@ -149,15 +162,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Recyclerview
-        ItemTouchHelper(dataAdapter.getSimpleCallback(model)).attachToRecyclerView(recyclerview)
+        ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }
 
-    fun insertFirebase(){
-        var setting = model.getSetting()
+    fun insertFirebase() {
+        var setting = dataViewModel.getSetting()
         for (i in 1..5) {
             var dataEntity = DataEntity().apply {
                 this.event = "TEST $i"
-                this.calendarDay = CalendarDay.from(2019, 5, 11)
+                this.calendarDay = CalendarDay.from(2019, 5, 12)
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
                 this.minute = i
@@ -165,25 +178,26 @@ class MainActivity : AppCompatActivity() {
                 this.firebaseCode = setting.firebaseCode
                 this.name = setting.name
             }
-            model.pushFirebase(dataEntity)
+            firebaseViewModel.pushFirebase(dataEntity)
         }
 
     }
+
     fun insertSetting() {
         var settingEntity = SettingEntity()
         settingEntity.apply {
             this.name = "ShangLin"
             this.firebaseCode = "TO0GbWYZ51d4RW95HZd3boY0mv62"
         }
-        model.insertSetting(settingEntity)
+        dataViewModel.insertSetting(settingEntity)
     }
 
     fun insertDataEntity() {
-        var setting = model.getSetting()
-        for (i in 1..5) {
+        var setting = dataViewModel.getSetting()
+        for (i in 1..2) {
             var dataEntity = DataEntity().apply {
                 this.event = "TEST $i"
-                this.calendarDay = CalendarDay.from(2019, 5, 11)
+                this.calendarDay = CalendarDay.from(2019, 5, 14)
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
                 this.minute = i
@@ -191,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                 this.firebaseCode = setting.firebaseCode
                 this.name = setting.name
             }
-            model.insert(dataEntity)
+            dataViewModel.insert(dataEntity)
         }
     }
 }

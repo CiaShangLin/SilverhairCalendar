@@ -70,6 +70,7 @@ class SettingDialog : DialogFragment() {
                 toast("更新成功")
             }
             settingCallback?.callback()
+            dismiss()
         }
         return view
     }

@@ -39,22 +39,6 @@ class DataViewModel: AndroidViewModel{
         return repository.getDay(calendarDay)
     }
 
-
-
-    //FirebaseDao
-    fun getFirebaseLiveData(): FirebaseLiveData {
-        return repository.getFirebaseLiveData()
-    }
-
-    fun pushFirebase(dataEntity: DataEntity){
-        repository.pushFirebase(dataEntity)
-    }
-
-    fun updateFirebase(dataEntity: DataEntity){
-        repository.updateFirebase(dataEntity)
-    }
-
-
     //Setting
     fun insertSetting(settingEntity: SettingEntity){
         repository.insertSetting(settingEntity)
