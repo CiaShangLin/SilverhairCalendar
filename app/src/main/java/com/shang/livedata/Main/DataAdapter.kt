@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.ViewModel.DataViewModel
-import org.jetbrains.anko.toast
+import java.time.LocalTime
 
 class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -42,9 +42,12 @@ class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBAC
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var dataEntity = getItem(position)
-        holder.idTv.text = dataEntity.id.toString()
-        holder.nameTv.text=dataEntity.firebaseCode+"\n"+dataEntity.event
-            holder.itemView.setOnClickListener {
+        holder.eventTv.text = dataEntity.event
+        holder.timeTv.text = getTime(dataEntity.hour,dataEntity.minute)
+        holder.nameTv.text = dataEntity.name
+
+
+        holder.itemView.setOnClickListener {
             if (listener != null)
                 listener.onItemClick(getDataAt(position))
         }
@@ -54,7 +57,7 @@ class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBAC
         return getItem(position)
     }
 
-    public interface OnItemClickListener {
+    interface OnItemClickListener {
         fun onItemClick(dataEntity: DataEntity)
     }
 
@@ -63,11 +66,12 @@ class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBAC
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var idTv = itemView.findViewById<TextView>(R.id.idTv)
+        var eventTv = itemView.findViewById<TextView>(R.id.eventTv)
+        var timeTv = itemView.findViewById<TextView>(R.id.timeTv)
         var nameTv = itemView.findViewById<TextView>(R.id.nameTv)
     }
 
-    fun getSimpleCallback(model:DataViewModel):ItemTouchHelper.SimpleCallback{
+    fun getSimpleCallback(model: DataViewModel): ItemTouchHelper.SimpleCallback {
         var simpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -76,11 +80,21 @@ class DataAdapter : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBAC
             ): Boolean {
                 return false
             }
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 model.delete(getDataAt(viewHolder.position))
             }
         }
         return simpleCallback
+    }
+
+    private fun getTime(hour:Int,minute:Int):String{
+        var stringBuffer=StringBuffer("")
+        stringBuffer.append(if(hour>=10) hour else "0$hour")
+            .append(":")
+            .append(if(minute>=10) minute else "0$minute")
+
+        return stringBuffer.toString()
     }
 
 }

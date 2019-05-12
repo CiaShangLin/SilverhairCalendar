@@ -1,6 +1,7 @@
 package com.shang.livedata.Main
 
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -203,5 +204,6 @@ class MainActivity : AppCompatActivity() {
             dataViewModel.insert(dataEntity)
         }
     }
+
 }
 

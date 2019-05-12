@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
+import com.shang.livedata.ViewModel.FirebaseViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
 import java.util.*
 
@@ -21,18 +23,24 @@ class AddDialog : DialogFragment() {
     companion object {
         val TAG: String = "AddDialog"
         private var addDialog: AddDialog? = null
-        private var type:Int=1
+        private val TIME: String = "TIME"
+        private val TYPE: String = "TYPE"
 
-        fun getInstance(type:Int): AddDialog {
+        fun getInstance(type: Int, calendarString: String): AddDialog {
             if (addDialog == null) {
                 addDialog = AddDialog()
             }
-            this.type=type
+            addDialog?.arguments.apply {
+                this?.putString(TIME, calendarString)
+                this?.putInt(TYPE, type)
+            }
+
             return addDialog as AddDialog
         }
     }
 
     private lateinit var dataViewModel: DataViewModel
+    private lateinit var firebaseViewModel: FirebaseViewModel
     private lateinit var settingEntity: SettingEntity
     private var hour: Int = 1
     private var minute: Int = 1
@@ -46,6 +54,7 @@ class AddDialog : DialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
+        firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
         settingEntity = dataViewModel.getSetting()
     }
 
@@ -56,7 +65,6 @@ class AddDialog : DialogFragment() {
         var nameEt = view.findViewById<EditText>(R.id.settingNameEt)
         var colorSp = view.findViewById<Spinner>(R.id.colorSp)
         var addBt = view.findViewById<Button>(R.id.addBt)
-
         colorSp.adapter = ColorSpinnerAdapter(context!!)
 
         return view
@@ -65,9 +73,10 @@ class AddDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var type = arguments?.getInt(TYPE)
+        var calendarString = arguments?.getString(TIME)
+
         settingNameEt.setText(settingEntity.name)
-
-
         timeEt.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
                 TimePickerDialog(
@@ -90,12 +99,21 @@ class AddDialog : DialogFragment() {
                 this.color = getColorSp()
                 this.hour = hour
                 this.minute = minute
-                this.calendarDay
-                this.calendarDayString
+                this.calendarDay = this.stringToCalendarDay(calendarDayString)
+                this.calendarDayString = calendarDayString
                 this.firebaseCode = settingEntity.firebaseCode
                 this.name = settingNameEt.text.toString()
             }
-            when(type){
+            when (type) {
+                ChoiceModeActivity.MainActivityMode->{
+
+                }
+                ChoiceModeActivity.FamilyActivityMode->{
+
+                }
+                3->{
+
+                }
 
             }
             dataViewModel.insert(dataEntity)

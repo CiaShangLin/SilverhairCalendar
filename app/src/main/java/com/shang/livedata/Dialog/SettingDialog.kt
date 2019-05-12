@@ -1,5 +1,6 @@
 package com.shang.livedata.Dialog
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -74,4 +75,6 @@ class SettingDialog : DialogFragment() {
         }
         return view
     }
+
+
 }
