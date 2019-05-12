@@ -27,10 +27,11 @@ import kotlinx.android.synthetic.main.nest_layout.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = "MainActivity"
     lateinit var dataViewModel: DataViewModel
     lateinit var firebaseViewModel: FirebaseViewModel
     lateinit var dataAdapter: DataAdapter
-    lateinit var myDayView:MyDayView
+    lateinit var myDayView: MyDayView
     private var settingCallback = object : SettingDialog.Callback {
         override fun callback() {
             initModel()
@@ -113,17 +114,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initModel() {
-        Log.d("TAG", "initModel")
-        firebaseViewModel=ViewModelProviders.of(this).get(FirebaseViewModel::class.java)
+
+        firebaseViewModel = ViewModelProviders.of(this).get(FirebaseViewModel::class.java)
         dataViewModel = ViewModelProviders.of(this).get(DataViewModel::class.java)
 
+        //當點擊日曆日期 通知更新
         dataViewModel.currentDate.observe(this, object : Observer<CalendarDay> {
             override fun onChanged(t: CalendarDay?) {
                 dataViewModel.getDay(t!!).observe(this@MainActivity,
-                    object : Observer<MutableList<DataEntity>> {
-                        override fun onChanged(t: MutableList<DataEntity>?) {
-                            dataAdapter.submitList(t!!)
-                        }
+                    Observer<MutableList<DataEntity>> { data ->
+                        dataAdapter.submitList(data)
                     }
                 )
             }
@@ -133,8 +133,7 @@ class MainActivity : AppCompatActivity() {
         //Room
         dataViewModel.getAllDataEntity().observe(this, object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
-                Log.d("TAG","DATAVM")
-                dataAdapter.submitList(data.filter { it.calendarDay==calendarView.selectedDate })
+                //清除後再增加　不然會重複蓋上去
                 calendarView.removeDecorators()
                 calendarView.addDecorator(
                     MyDayView(
@@ -143,12 +142,8 @@ class MainActivity : AppCompatActivity() {
                         resources.getDrawable(R.drawable.ic_ellipsis)
                     )
                 )
-                
-                data.map {
-                    it.calendarDay
-                }.toHashSet().forEach {
-                    Log.d("TAG",it.toString())
-                }
+                //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
+                dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
             }
         })
 
