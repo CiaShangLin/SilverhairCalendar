@@ -13,7 +13,7 @@ class FirebaseDao(eventDao: EventDao) {
     init {//要改
         if(eventDao.getSetting()!=null){
             query = FirebaseDatabase.getInstance().getReference(eventDao.getSetting().firebaseCode)
-            var firebaseLiveData= FirebaseLiveData(query, eventDao)
+            firebaseLiveData= FirebaseLiveData(query, eventDao)
         }
     }
 

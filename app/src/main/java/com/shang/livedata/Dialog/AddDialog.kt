@@ -21,11 +21,13 @@ class AddDialog : DialogFragment() {
     companion object {
         val TAG: String = "AddDialog"
         private var addDialog: AddDialog? = null
+        private var type:Int=1
 
-        fun getInstance(): AddDialog {
+        fun getInstance(type:Int): AddDialog {
             if (addDialog == null) {
                 addDialog = AddDialog()
             }
+            this.type=type
             return addDialog as AddDialog
         }
     }
@@ -92,6 +94,9 @@ class AddDialog : DialogFragment() {
                 this.calendarDayString
                 this.firebaseCode = settingEntity.firebaseCode
                 this.name = settingNameEt.text.toString()
+            }
+            when(type){
+
             }
             dataViewModel.insert(dataEntity)
         }

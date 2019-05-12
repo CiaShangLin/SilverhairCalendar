@@ -19,12 +19,18 @@ class SettingDialog : DialogFragment() {
     companion object {
         val TAG = "SettingDialog"
         private var settingDialog: SettingDialog? = null
-        fun getInstance(): SettingDialog {
+        private var settingCallback: SettingDialog.Callback? = null
+        fun getInstance(callback: SettingDialog.Callback): SettingDialog {
             if (settingDialog == null) {
                 settingDialog = SettingDialog()
             }
+            this.settingCallback = callback
             return settingDialog as SettingDialog
         }
+    }
+
+    interface Callback {
+        fun callback()
     }
 
     private lateinit var dataViewModel: DataViewModel
@@ -39,9 +45,8 @@ class SettingDialog : DialogFragment() {
 
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
 
-
         var settingEntity = dataViewModel.getSetting()
-        if(settingEntity!=null){
+        if (settingEntity != null) {
             settingNameEt.setText(settingEntity.name)
             settingFirebaseCodeEt.setText(settingEntity.firebaseCode)
         }
@@ -53,17 +58,18 @@ class SettingDialog : DialogFragment() {
         var settingFirebaseCodeEt = view.findViewById<EditText>(R.id.settingFirebaseCodeEt)
         var saveBt = view.findViewById<Button>(R.id.saveBt)
         saveBt.setOnClickListener {
-            var settingEntity=SettingEntity().apply {
+            var settingEntity = SettingEntity().apply {
                 this.name = settingNameEt.text.toString()
                 this.firebaseCode = settingFirebaseCodeEt.text.toString()
             }
-            if(dataViewModel.getSetting()==null){
+            if (dataViewModel.getSetting() == null) {
                 dataViewModel.insertSetting(settingEntity)
                 toast("新增成功")
-            }else{
+            } else {
                 dataViewModel.updateSetting(settingEntity)
                 toast("更新成功")
             }
+            settingCallback?.callback()
         }
         return view
     }

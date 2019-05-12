@@ -4,6 +4,7 @@ package com.shang.livedata.Main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,16 +29,19 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var model: DataViewModel
     lateinit var dataAdapter: DataAdapter
+    private var settingCallback=object :SettingDialog.Callback{
+        override fun callback() {
+            initModel()
+        }
+    }
+    private var type: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (intent.getIntExtra(ChoiceModeActivity.TYPE, 1) == 1) {
-
-        } else {
-
-        }
+        model = ViewModelProviders.of(this).get(DataViewModel::class.java)
+        type = intent.getIntExtra(ChoiceModeActivity.TYPE, 1)
 
         //CalendarView
         calendarView.setTitleFormatter { day ->
@@ -63,8 +67,8 @@ class MainActivity : AppCompatActivity() {
         saveBt.setOnClickListener {
             //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
             //SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
-
-            startActivity(Intent(this, ChoiceModeActivity::class.java))
+            insertFirebase()
+            //startActivity(Intent(this, ChoiceModeActivity::class.java))
         }
 
         //appBarLayout
@@ -83,18 +87,31 @@ class MainActivity : AppCompatActivity() {
         mainTb.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_seting -> {
-                    SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
+                    SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
                 }
             }
             true
         }
-        //insertSetting()
-        //insertDataEntity()
+
+        when (2) {
+            ChoiceModeActivity.MainActivityMode -> {
+                initModel()
+            }
+            ChoiceModeActivity.FamilyActivityMode -> {
+                if (model.getSetting() == null) {
+                    SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
+                    Log.d("TAG","沒有Setting")
+                } else {
+                    initModel()
+                }
+            }
+        }
+
     }
 
-    fun initModel() {
+    private fun initModel() {
+        Log.d("TAG","initModel")
         model = ViewModelProviders.of(this).get(DataViewModel::class.java)
-
         model.currentDate.observe(this, object : Observer<CalendarDay> {
             override fun onChanged(t: CalendarDay?) {
                 model.getDay(t!!).observe(this@MainActivity,
@@ -135,6 +152,23 @@ class MainActivity : AppCompatActivity() {
         ItemTouchHelper(dataAdapter.getSimpleCallback(model)).attachToRecyclerView(recyclerview)
     }
 
+    fun insertFirebase(){
+        var setting = model.getSetting()
+        for (i in 1..5) {
+            var dataEntity = DataEntity().apply {
+                this.event = "TEST $i"
+                this.calendarDay = CalendarDay.from(2019, 5, 11)
+                this.calendarDayString = calendarDayToString(calendarDay)
+                this.hour = i
+                this.minute = i
+                this.color = R.color.blue
+                this.firebaseCode = setting.firebaseCode
+                this.name = setting.name
+            }
+            model.pushFirebase(dataEntity)
+        }
+
+    }
     fun insertSetting() {
         var settingEntity = SettingEntity()
         settingEntity.apply {

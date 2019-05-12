@@ -12,12 +12,10 @@ import com.shang.livedata.Room.SettingEntity
 
 class DataViewModel: AndroidViewModel{
     private lateinit var repository: DataRepository
-    private lateinit var allDataEntity: LiveData<MutableList<DataEntity>>
     var currentDate: MutableLiveData<CalendarDay> =MutableLiveData()
 
     constructor(application: Application) : super(application) {
         repository= DataRepository(application)
-        allDataEntity=repository.getAllData()
     }
 
     //EventDao

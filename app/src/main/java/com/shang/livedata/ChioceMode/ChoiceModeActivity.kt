@@ -11,7 +11,6 @@ import com.firebase.ui.auth.AuthUI
 import java.util.*
 import android.annotation.SuppressLint
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.shang.livedata.R
@@ -29,8 +28,8 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
         val TYPE: String = "TYPE"
-        val MainActivityType: Int = 1
-        val FamilyActivityType: Int = 2
+        val MainActivityMode: Int = 1
+        val FamilyActivityMode: Int = 2
     }
 
 
@@ -45,17 +44,17 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.avatarImgBt -> {
-                firebaseAuthRegister(MainActivityType)
+                firebaseAuthRegister(MainActivityMode)
             }
             R.id.familyImgBt -> {
-                firebaseAuthRegister(FamilyActivityType)
+                firebaseAuthRegister(FamilyActivityMode)
             }
         }
     }
 
     private fun firebaseAuthRegister(type: Int) {
         when (type) {
-            MainActivityType -> {
+            MainActivityMode -> {
                 if (firebaseAuth.currentUser == null) {
                     startActivityForResult(
                         AuthUI.getInstance()
@@ -69,14 +68,14 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
                         RC_SIGN_IN
                     )
                 } else {
-                    startActivity(Intent(this@ChoiceModeActivity, MainActivityType::class.java).apply {
-                        this.putExtra(TYPE, MainActivityType)
+                    startActivity(Intent(this@ChoiceModeActivity, MainActivityMode::class.java).apply {
+                        this.putExtra(TYPE, MainActivityMode)
                     })
                 }
             }
-            FamilyActivityType -> {
-                startActivity(Intent(this@ChoiceModeActivity, FamilyActivityType::class.java).apply {
-                    this.putExtra(TYPE, FamilyActivityType)
+            FamilyActivityMode -> {
+                startActivity(Intent(this@ChoiceModeActivity, FamilyActivityMode::class.java).apply {
+                    this.putExtra(TYPE, FamilyActivityMode)
                 })
             }
         }
@@ -95,8 +94,8 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
                         this.name = it?.displayName.toString()
                     })
                 }
-                startActivity(Intent(this@ChoiceModeActivity, MainActivityType::class.java).apply {
-                    this.putExtra(TYPE, MainActivityType)
+                startActivity(Intent(this@ChoiceModeActivity, MainActivityMode::class.java).apply {
+                    this.putExtra(TYPE, MainActivityMode)
                 })
             } else {
                 if (response == null) {
