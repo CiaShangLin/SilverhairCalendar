@@ -5,11 +5,13 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="blue">#00BBFF</color>
+    <color name="orange">#FF8800</color>
 
     <array name="colorArray">
-        <item>#008577</item>
-        <item>#00574B</item>
-        <item>#D81B60</item>
+        <item>#00BBFF</item>
+        <item>#FF0000</item>
+        <item>#FF8800</item>
+        <item>#FF00FF</item>
     </array>
 
 </resources>

@@ -12,9 +12,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
+import com.shang.livedata.Dialog.AddDialog
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var dataViewModel: DataViewModel
     lateinit var firebaseViewModel: FirebaseViewModel
     lateinit var dataAdapter: DataAdapter
-    lateinit var myDayView: MyDayView
     private var settingCallback = object : SettingDialog.Callback {
         override fun callback() {
             initModel()
@@ -57,9 +59,11 @@ class MainActivity : AppCompatActivity() {
         calendarView.setOnDateChangedListener { widget, date, selected ->
             dataViewModel.currentDate.value = date
         }
+        calendarView.addDecorator(TodayView(this@MainActivity))
+
 
         //RecyclerView
-        recyclerview.layoutManager = LinearLayoutManager(this)
+        recyclerview.layoutManager = GridLayoutManager(this, 2)
         dataAdapter = DataAdapter()
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
@@ -70,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 
         saveBt.setOnClickListener {
-            //AddDialog.getInstance().show(supportFragmentManager,AddDialog.TAG)
+            //AddDialog.getInstance(1,"").show(supportFragmentManager, AddDialog.TAG)
             //SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
             insertDataEntity()
             //startActivity(Intent(this, ChoiceModeActivity::class.java))
@@ -112,6 +116,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //當天顏色要改
     }
 
     private fun initModel() {
@@ -135,14 +140,16 @@ class MainActivity : AppCompatActivity() {
         dataViewModel.getAllDataEntity().observe(this, object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
                 //清除後再增加　不然會重複蓋上去
-                calendarView.removeDecorators()
-                calendarView.addDecorator(
-                    MyDayView(
-                        data.map { it.calendarDay }.toHashSet(),
-                        resources.getColor(R.color.primary_dark_material_dark),
-                        resources.getDrawable(R.drawable.ic_ellipsis)
-                    )
+                var myDayView = MyDayView(
+                    this@MainActivity,
+                    data.map { it.calendarDay }.toHashSet(),
+                    resources.getColor(R.color.blue),
+                    resources.getDrawable(R.drawable.ic_ellipsis)
                 )
+                calendarView.removeDecorator(myDayView)
+                calendarView.addDecorator(myDayView)
+
+
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
                 dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
             }
@@ -165,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         var setting = dataViewModel.getSetting()
         for (i in 1..5) {
             var dataEntity = DataEntity().apply {
-                this.event = "TEST $i"
+                this.event = "今天要吃藥"
                 this.calendarDay = CalendarDay.from(2019, 5, 12)
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
@@ -190,10 +197,10 @@ class MainActivity : AppCompatActivity() {
 
     fun insertDataEntity() {
         var setting = dataViewModel.getSetting()
-        for (i in 1..2) {
+        for (i in 1..3) {
             var dataEntity = DataEntity().apply {
-                this.event = "TEST $i"
-                this.calendarDay = CalendarDay.from(2019, 5, 14)
+                this.event = "小翠出來玩"
+                this.calendarDay = CalendarDay.from(2019, 5, 13)
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
                 this.minute = i

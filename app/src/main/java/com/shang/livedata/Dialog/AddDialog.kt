@@ -34,7 +34,6 @@ class AddDialog : DialogFragment() {
                 this?.putString(TIME, calendarString)
                 this?.putInt(TYPE, type)
             }
-
             return addDialog as AddDialog
         }
     }
@@ -56,6 +55,7 @@ class AddDialog : DialogFragment() {
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
         settingEntity = dataViewModel.getSetting()
+        settingNameEt.setText(settingEntity.name)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,7 +76,7 @@ class AddDialog : DialogFragment() {
         var type = arguments?.getInt(TYPE)
         var calendarString = arguments?.getString(TIME)
 
-        settingNameEt.setText(settingEntity.name)
+        //
         timeEt.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
                 TimePickerDialog(
@@ -84,6 +84,7 @@ class AddDialog : DialogFragment() {
                     TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
                         this.hour = hourOfDay
                         this.minute = minute
+                        timeEt.setText("$hour:$minute")
                     },
                     Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
                     Calendar.getInstance().get(Calendar.MINUTE),
