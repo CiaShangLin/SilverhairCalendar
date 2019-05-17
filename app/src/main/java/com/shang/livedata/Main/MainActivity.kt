@@ -21,6 +21,7 @@ import com.shang.livedata.Dialog.AddDialog
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
+import com.shang.livedata.Room.DateConverter
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //RecyclerView
-        recyclerview.layoutManager = GridLayoutManager(this, 2)
+        recyclerview.layoutManager = LinearLayoutManager(this)
         dataAdapter = DataAdapter()
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
@@ -98,6 +99,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.menu_seting -> {
                     SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
                 }
+                R.id.menu_add -> {
+                    AddDialog.getInstance(type, calendarView.selectedDate!!).show(supportFragmentManager, AddDialog.TAG)
+                }
             }
             true
         }
@@ -115,8 +119,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        //當天顏色要改
     }
 
     private fun initModel() {
@@ -177,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
                 this.minute = i
-                this.color = R.color.blue
+                this.type = i % 4
                 this.firebaseCode = setting.firebaseCode
                 this.name = setting.name
             }
@@ -204,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 this.calendarDayString = calendarDayToString(calendarDay)
                 this.hour = i
                 this.minute = i
-                this.color = R.color.blue
+                this.type = i % 4
                 this.firebaseCode = setting.firebaseCode
                 this.name = setting.name
             }

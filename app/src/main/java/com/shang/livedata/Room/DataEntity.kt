@@ -30,7 +30,7 @@ class DataEntity {
 
     var calendarDayString: String = ""
 
-    var color: Int = 0   //紀錄顏色
+    var type: Int = 0   //紀錄顏色
 
     var status: Boolean = false  //事件狀態
 
@@ -46,7 +46,7 @@ class DataEntity {
         map.put("event", event)
         map.put("hour", hour)
         map.put("minute", minute)
-        map.put("color", color)
+        map.put("type", type)
         map.put("status", status)
         map.put("name", name)
         map.put("firebaseCode", firebaseCode)

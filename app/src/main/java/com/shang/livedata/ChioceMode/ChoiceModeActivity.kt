@@ -10,9 +10,13 @@ import kotlinx.android.synthetic.main.activity_choice_mode.*
 import com.firebase.ui.auth.AuthUI
 import java.util.*
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.View
+import androidx.lifecycle.ViewModelProviders
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
+import com.shang.livedata.FamilyActivity
+import com.shang.livedata.Main.MainActivity
 import com.shang.livedata.R
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
@@ -37,6 +41,7 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choice_mode)
 
+        model = ViewModelProviders.of(this).get(DataViewModel::class.java)
         familyImgBt.setOnClickListener(this)
         avatarImgBt.setOnClickListener(this)
     }
@@ -52,6 +57,7 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    //註冊
     private fun firebaseAuthRegister(type: Int) {
         when (type) {
             MainActivityMode -> {
@@ -68,33 +74,33 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
                         RC_SIGN_IN
                     )
                 } else {
-                    startActivity(Intent(this@ChoiceModeActivity, MainActivityMode::class.java).apply {
+                    startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java).apply {
                         this.putExtra(TYPE, MainActivityMode)
                     })
                 }
             }
             FamilyActivityMode -> {
-                startActivity(Intent(this@ChoiceModeActivity, FamilyActivityMode::class.java).apply {
+                startActivity(Intent(this@ChoiceModeActivity, FamilyActivity::class.java).apply {
                     this.putExtra(TYPE, FamilyActivityMode)
                 })
             }
         }
     }
 
-    @SuppressLint("RestrictedApi")
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
-                var user = FirebaseAuth.getInstance().currentUser
-                user.let {
+               FirebaseAuth.getInstance().currentUser.let {
                     model.insertSetting(SettingEntity().apply {
                         this.firebaseCode = it?.uid.toString()
                         this.name = it?.displayName.toString()
+                        Log.d("TAG","$firebaseCode $name" )
                     })
                 }
-                startActivity(Intent(this@ChoiceModeActivity, MainActivityMode::class.java).apply {
+                startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java).apply {
                     this.putExtra(TYPE, MainActivityMode)
                 })
             } else {

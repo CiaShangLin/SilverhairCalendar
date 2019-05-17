@@ -3,4 +3,6 @@
     <item android:title="設定"
           android:id="@+id/menu_seting"
           android:icon="@drawable/ic_settings_black_24dp" app:showAsAction="always"/>
+    <item android:title="Add" android:icon="@drawable/ic_add_black_24dp" app:showAsAction="always"
+          android:id="@+id/menu_add"/>
 </menu>

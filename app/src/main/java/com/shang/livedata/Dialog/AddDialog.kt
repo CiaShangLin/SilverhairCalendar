@@ -2,15 +2,18 @@ package com.shang.livedata.Dialog
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
+import com.shang.livedata.Room.DateConverter
 import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
@@ -26,12 +29,12 @@ class AddDialog : DialogFragment() {
         private val TIME: String = "TIME"
         private val TYPE: String = "TYPE"
 
-        fun getInstance(type: Int, calendarString: String): AddDialog {
+        fun getInstance(type: Int, calendar: CalendarDay): AddDialog {
             if (addDialog == null) {
                 addDialog = AddDialog()
             }
-            addDialog?.arguments.apply {
-                this?.putString(TIME, calendarString)
+            addDialog?.arguments = Bundle().apply {
+                this?.putString(TIME, DateConverter.calendarDayToString(calendar))
                 this?.putInt(TYPE, type)
             }
             return addDialog as AddDialog
@@ -41,8 +44,6 @@ class AddDialog : DialogFragment() {
     private lateinit var dataViewModel: DataViewModel
     private lateinit var firebaseViewModel: FirebaseViewModel
     private lateinit var settingEntity: SettingEntity
-    private var hour: Int = 1
-    private var minute: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,7 @@ class AddDialog : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
         settingEntity = dataViewModel.getSetting()
@@ -60,11 +62,11 @@ class AddDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.dialog_add, container, false)
-        var eventEt = view.findViewById<EditText>(R.id.eventEt)
-        var timeEt = view.findViewById<EditText>(R.id.timeEt)
-        var nameEt = view.findViewById<EditText>(R.id.settingNameEt)
-        var colorSp = view.findViewById<Spinner>(R.id.colorSp)
-        var addBt = view.findViewById<Button>(R.id.addBt)
+        view.findViewById<EditText>(R.id.eventEt)
+        view.findViewById<EditText>(R.id.timeEt)
+        view.findViewById<EditText>(R.id.settingNameEt)
+        view.findViewById<Button>(R.id.addBt)
+        view.findViewById<Spinner>(R.id.colorSp)
         colorSp.adapter = ColorSpinnerAdapter(context!!)
 
         return view
@@ -75,16 +77,14 @@ class AddDialog : DialogFragment() {
 
         var type = arguments?.getInt(TYPE)
         var calendarString = arguments?.getString(TIME)
+        Log.d(TAG, "type:$type calendarString:$calendarString")
 
-        //
-        timeEt.setOnTouchListener { view, motionEvent ->
+        this.timeEt.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
                 TimePickerDialog(
                     context,
                     TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
-                        this.hour = hourOfDay
-                        this.minute = minute
-                        timeEt.setText("$hour:$minute")
+                        timeEt.setText("$hourOfDay:$minute")
                     },
                     Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
                     Calendar.getInstance().get(Calendar.MINUTE),
@@ -97,50 +97,31 @@ class AddDialog : DialogFragment() {
         addBt.setOnClickListener {
             var dataEntity = DataEntity().apply {
                 this.event = eventEt.text.toString()
-                this.color = getColorSp()
-                this.hour = hour
-                this.minute = minute
-                this.calendarDay = this.stringToCalendarDay(calendarDayString)
-                this.calendarDayString = calendarDayString
+                this.type = colorSp.selectedItemPosition
+                this.hour = getTime(timeEt.text.toString(), 0)
+                this.minute = getTime(timeEt.text.toString(), 1)
+                this.calendarDay = DateConverter.stringToCalendarDay(calendarString!!)
+                this.calendarDayString = calendarString!!
                 this.firebaseCode = settingEntity.firebaseCode
                 this.name = settingNameEt.text.toString()
             }
             when (type) {
-                ChoiceModeActivity.MainActivityMode->{
+                ChoiceModeActivity.MainActivityMode -> {
+                    dataViewModel.insert(dataEntity)
+                }
+                ChoiceModeActivity.FamilyActivityMode -> {
+                    firebaseViewModel.pushFirebase(dataEntity)
+                }
+                3 -> {
 
                 }
-                ChoiceModeActivity.FamilyActivityMode->{
-
-                }
-                3->{
-
-                }
-
-            }
-            dataViewModel.insert(dataEntity)
-        }
-
-        colorSp.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(p0: AdapterView<*>, p1: View?, position: Int, id: Long) {
-
-
             }
         }
-
     }
 
-    fun getColorSp(): Int {
-        var colorArray = context?.resources?.getIntArray(R.array.colorArray)
-        //var colorName=context?.resources?.getStringArray(R.array.colorName)
-        var color = colorArray?.get(colorSp.selectedItemPosition)
-        if (color != null) {
-            return color
-        }
-        return R.color.blue
+    private fun getTime(timeEt: String, type: Int): Int {
+        val timeSp = timeEt.split(":")
+        return timeSp[type].toInt()
     }
 
 }
