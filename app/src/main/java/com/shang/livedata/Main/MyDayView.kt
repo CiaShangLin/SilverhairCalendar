@@ -5,6 +5,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import android.content.Context
+import android.icu.text.UnicodeSet
 import android.text.style.ForegroundColorSpan
 import androidx.core.content.ContextCompat
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
@@ -33,6 +34,7 @@ class MyDayView : DayViewDecorator {
 
         //view?.setBackgroundDrawable(drawable)
 
-        view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context,R.color.fui_bgFacebook)))
+        view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context,R.color.blue)))
+
     }
 }

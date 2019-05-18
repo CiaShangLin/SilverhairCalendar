@@ -8,6 +8,7 @@
     <color name="orange">#FF8800</color>
 
     <array name="colorArray">
+        <item>#00DD00</item>
         <item>#00BBFF</item>
         <item>#FF0000</item>
         <item>#FF8800</item>

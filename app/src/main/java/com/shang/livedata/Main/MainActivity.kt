@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         //RecyclerView
         recyclerview.layoutManager = LinearLayoutManager(this)
-        dataAdapter = DataAdapter()
+        dataAdapter = DataAdapter(this)
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
                 toast(calendarView.selectedDate.toString())

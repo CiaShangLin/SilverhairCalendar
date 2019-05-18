@@ -39,8 +39,11 @@
                     android:id="@+id/calendarView"
                     android:visibility="visible"
                     android:layout_marginTop="?attr/actionBarSize"
-                    app:mcv_selectionColor="@color/colorPrimaryDark"
-                    android:background="@android:color/background_light">
+                    app:mcv_selectionColor="@color/fui_bgAnonymous"
+                    android:background="@android:color/background_light"
+                    app:mcv_tileHeight="match_parent"
+                    app:mcv_tileWidth="match_parent"
+                    app:mcv_tileSize="24sp">
             </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
 
 
@@ -55,6 +58,17 @@
                  android:id="@+id/include"/>
 
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_add_black_24dp"
+            android:id="@+id/floatingActionButton2"
+            app:layout_anchor="@id/appBarLayout"
+            app:layout_anchorGravity="bottom|right"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="16dp"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

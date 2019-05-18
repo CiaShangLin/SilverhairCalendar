@@ -3,10 +3,19 @@
 
 
     <string-array name="colorName">
+        <item>綠色(雜事)</item>
         <item>藍色(吃藥)</item>
         <item>紅色(出門)</item>
         <item>橘色(親友)</item>
         <item>紫色(外送)</item>
+    </string-array>
+
+    <string-array name="typeName">
+        <item>雜</item>
+        <item>藥</item>
+        <item>出</item>
+        <item>親</item>
+        <item>外</item>
     </string-array>
     <string name="title_activity_choice_mode">ChoiceModeActivity</string>
     <string name="title_activity_family">FamilyActivity</string>

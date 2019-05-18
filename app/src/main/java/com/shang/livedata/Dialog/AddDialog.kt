@@ -18,6 +18,7 @@ import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
+import org.jetbrains.anko.support.v4.toast
 import java.util.*
 
 
@@ -66,7 +67,7 @@ class AddDialog : DialogFragment() {
         view.findViewById<EditText>(R.id.timeEt)
         view.findViewById<EditText>(R.id.settingNameEt)
         view.findViewById<Button>(R.id.addBt)
-        view.findViewById<Spinner>(R.id.colorSp)
+        var colorSp=view.findViewById<Spinner>(R.id.colorSp)
         colorSp.adapter = ColorSpinnerAdapter(context!!)
 
         return view
@@ -107,15 +108,18 @@ class AddDialog : DialogFragment() {
             }
             when (type) {
                 ChoiceModeActivity.MainActivityMode -> {
+                    toast("新增本地成功")
                     dataViewModel.insert(dataEntity)
                 }
                 ChoiceModeActivity.FamilyActivityMode -> {
+                    toast("新增遠端成功")
                     firebaseViewModel.pushFirebase(dataEntity)
                 }
                 3 -> {
 
                 }
             }
+            dismiss()
         }
     }
 
