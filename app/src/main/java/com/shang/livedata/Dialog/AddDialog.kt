@@ -115,9 +115,6 @@ class AddDialog : DialogFragment() {
                     toast("新增遠端成功")
                     firebaseViewModel.pushFirebase(dataEntity)
                 }
-                3 -> {
-
-                }
             }
             dismiss()
         }

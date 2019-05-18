@@ -3,6 +3,7 @@ package com.shang.livedata.Main
 import android.content.Context
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.view.LayoutInflater
@@ -38,6 +39,13 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
     }
 
     private lateinit var listener: OnItemClickListener
+    private lateinit var colorArray: IntArray
+    private lateinit var typeArray: Array<String>
+
+    init {
+        colorArray = context.resources.getIntArray(R.array.colorArray)
+        typeArray = context.resources.getStringArray(R.array.typeName)
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,16 +55,17 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var dataEntity = getItem(position)
-        holder.eventTv.text = dataEntity.event
-        holder.timeTv.text = getTime(dataEntity.hour, dataEntity.minute)
-        holder.nameTv.text = dataEntity.name
-        holder.typeTv.text = getTypeText(dataEntity.type)
-        holder.typeTv.background = getTypeBackground(dataEntity.type)
-        holder.itemView.setOnClickListener {
-            if (listener != null)
-                listener.onItemClick(getDataAt(position))
+        if (dataEntity != null) {
+            holder.eventTv.text = dataEntity.event
+            holder.timeTv.text = getTime(dataEntity.hour, dataEntity.minute)
+            holder.nameTv.text = dataEntity.name
+            holder.typeTv.text = getTypeText(dataEntity.type)
+            holder.typeTv.background = getTypeBackground(dataEntity.type)
+            holder.itemView.setOnClickListener {
+                if (listener != null)
+                    listener.onItemClick(getDataAt(position))
+            }
         }
-
     }
 
     fun getDataAt(position: Int): DataEntity {
@@ -95,16 +104,17 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
         return simpleCallback
     }
 
-    private fun getTypeBackground(type:Int): Drawable {
+    private fun getTypeBackground(type: Int): Drawable {
         var shape = ContextCompat.getDrawable(context, R.drawable.shape)
-        shape?.setColorFilter(getTypeColor(type), PorterDuff.Mode.ADD)
+        shape?.setColorFilter(getTypeColor(type), PorterDuff.Mode.SRC)
         return shape!!
     }
 
-    private fun getTypeText(type:Int):String{
+    private fun getTypeText(type: Int): String {
         return context.resources.getStringArray(R.array.typeName)[type]
     }
-    private fun getTypeColor(type:Int):Int{
+
+    private fun getTypeColor(type: Int): Int {
         return context.resources.getIntArray(R.array.colorArray)[type]
     }
 
