@@ -28,8 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_add_black_24dp" />
-                            <entry key="sourceFile" value="C:\Users\Shang\Downloads\doctor.svg" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_ok" />
+                            <entry key="sourceFile" value="C:\Users\Shang\Downloads\check-symbol.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -18,6 +18,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.Dialog.AddDialog
+import com.shang.livedata.Dialog.EditDialog
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         dataAdapter = DataAdapter(this)
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
-                toast(calendarView.selectedDate.toString())
+                EditDialog.getInstance(type,dataEntity).show(supportFragmentManager,EditDialog.TAG)
             }
         })
         recyclerview.adapter = dataAdapter
@@ -104,6 +105,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
+        }
+
+        floatingActionButton.setOnClickListener {
+
         }
 
         when (type) {
@@ -167,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Recyclerview
-        ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
+        //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }
 
     fun insertFirebase() {

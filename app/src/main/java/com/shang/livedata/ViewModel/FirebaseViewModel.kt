@@ -27,4 +27,8 @@ class FirebaseViewModel: AndroidViewModel{
     fun updateFirebase(dataEntity: DataEntity){
         firebaseRepository.updateFirebase(dataEntity)
     }
+
+    fun deleteFirebase(dataEntity: DataEntity) {
+        firebaseRepository.deleteFirebase(dataEntity)
+    }
 }

@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -22,7 +23,8 @@ import org.jetbrains.anko.support.v4.toast
 import java.util.*
 
 
-class AddDialog : DialogFragment() {
+class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
+
 
     companion object {
         val TAG: String = "AddDialog"
@@ -67,7 +69,7 @@ class AddDialog : DialogFragment() {
         view.findViewById<EditText>(R.id.timeEt)
         view.findViewById<EditText>(R.id.settingNameEt)
         view.findViewById<Button>(R.id.addBt)
-        var colorSp=view.findViewById<Spinner>(R.id.colorSp)
+        var colorSp = view.findViewById<Spinner>(R.id.colorSp)
         colorSp.adapter = ColorSpinnerAdapter(context!!)
 
         return view
@@ -76,53 +78,54 @@ class AddDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var type = arguments?.getInt(TYPE)
-        var calendarString = arguments?.getString(TIME)
-        Log.d(TAG, "type:$type calendarString:$calendarString")
-
-        this.timeEt.setOnTouchListener { view, motionEvent ->
-            if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
-                TimePickerDialog(
-                    context,
-                    TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
-                        timeEt.setText("$hourOfDay:$minute")
-                    },
-                    Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                    Calendar.getInstance().get(Calendar.MINUTE),
-                    true
-                ).show()
-            }
-            true
-        }
-
-        addBt.setOnClickListener {
-            var dataEntity = DataEntity().apply {
-                this.event = eventEt.text.toString()
-                this.type = colorSp.selectedItemPosition
-                this.hour = getTime(timeEt.text.toString(), 0)
-                this.minute = getTime(timeEt.text.toString(), 1)
-                this.calendarDay = DateConverter.stringToCalendarDay(calendarString!!)
-                this.calendarDayString = calendarString!!
-                this.firebaseCode = settingEntity.firebaseCode
-                this.name = settingNameEt.text.toString()
-            }
-            when (type) {
-                ChoiceModeActivity.MainActivityMode -> {
-                    toast("新增本地成功")
-                    dataViewModel.insert(dataEntity)
-                }
-                ChoiceModeActivity.FamilyActivityMode -> {
-                    toast("新增遠端成功")
-                    firebaseViewModel.pushFirebase(dataEntity)
-                }
-            }
-            dismiss()
-        }
+        timeEt.setOnTouchListener(this)
+        addBt.setOnClickListener(this)
     }
 
     private fun getTime(timeEt: String, type: Int): Int {
         val timeSp = timeEt.split(":")
         return timeSp[type].toInt()
+    }
+
+    override fun onClick(p0: View?) {
+        var type = arguments?.getInt(TYPE)
+        var calendarString = arguments?.getString(TIME)
+        var dataEntity = DataEntity().apply {
+            this.event = eventEt.text.toString()
+            this.type = colorSp.selectedItemPosition
+            this.hour = getTime(timeEt.text.toString(), 0)
+            this.minute = getTime(timeEt.text.toString(), 1)
+            this.calendarDay = DateConverter.stringToCalendarDay(calendarString!!)
+            this.calendarDayString = calendarString!!
+            this.firebaseCode = settingEntity.firebaseCode
+            this.name = settingNameEt.text.toString()
+        }
+        when (type) {
+            ChoiceModeActivity.MainActivityMode -> {
+                toast("新增本地成功")
+                dataViewModel.insert(dataEntity)
+            }
+            ChoiceModeActivity.FamilyActivityMode -> {
+                toast("新增遠端成功")
+                firebaseViewModel.pushFirebase(dataEntity)
+            }
+        }
+        dismiss()
+    }
+
+    override fun onTouch(p0: View?, motionEvent: MotionEvent): Boolean {
+        if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
+            TimePickerDialog(
+                context,
+                TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+                    timeEt.setText("$hourOfDay:$minute")
+                },
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                Calendar.getInstance().get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+        return true
     }
 
 }

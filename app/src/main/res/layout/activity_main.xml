@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:srcCompat="@drawable/ic_add_black_24dp"
-            android:id="@+id/floatingActionButton2"
+            android:id="@+id/floatingActionButton"
             app:layout_anchor="@id/appBarLayout"
             app:layout_anchorGravity="bottom|right"
             android:layout_marginRight="8dp"
