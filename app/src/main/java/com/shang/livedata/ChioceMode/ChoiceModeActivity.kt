@@ -80,7 +80,7 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
             FamilyActivityMode -> {
-                startActivity(Intent(this@ChoiceModeActivity, FamilyActivity::class.java).apply {
+                startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java).apply {
                     this.putExtra(TYPE, FamilyActivityMode)
                 })
             }

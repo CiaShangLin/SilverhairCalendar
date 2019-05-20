@@ -58,5 +58,5 @@
             android:id="@+id/toolbar3"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" app:title="Setting"
-            app:navigationIcon="@drawable/ic_settings_black_24dp"/>
+            app:navigationIcon="@drawable/ic_settings"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

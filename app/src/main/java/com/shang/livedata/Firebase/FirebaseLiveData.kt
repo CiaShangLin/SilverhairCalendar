@@ -3,10 +3,11 @@ package com.shang.livedata.Firebase
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.*
+import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.EventDao
 
-class FirebaseLiveData(private var query: DatabaseReference, private var eventDao: EventDao) : LiveData<String>() {
+class FirebaseLiveData(private var query: DatabaseReference, private var dataRepository: DataRepository) : LiveData<String>() {
 
     private val TAG: String = "FirebaseLiveData"
 
@@ -23,6 +24,7 @@ class FirebaseLiveData(private var query: DatabaseReference, private var eventDa
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
             updateToRoom(p0)
+            Log.v(TAG, "事件更新:${p0.key}")
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
@@ -33,6 +35,7 @@ class FirebaseLiveData(private var query: DatabaseReference, private var eventDa
 
         override fun onChildRemoved(p0: DataSnapshot) {
             deleteToRoom(p0)
+            Log.v(TAG, "事件刪除:${p0.key}")
         }
 
     }
@@ -55,8 +58,9 @@ class FirebaseLiveData(private var query: DatabaseReference, private var eventDa
     private fun insertToRoom(dataSnapshot: DataSnapshot) {
         var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
         if (dataEntity != null) {
-            if (!eventDao.checkFirebaseCode(dataEntity.firebaseCode)) {
-                eventDao.insert(dataEntity)
+            //檢查firebaseCode是因為每次onActive他都會跑一次
+            if (!dataRepository.checkFirebaseCode(dataEntity.firebaseCode)) {
+                dataRepository.insert(dataEntity)
                 value = "事件新增"
             }
         }
@@ -65,8 +69,8 @@ class FirebaseLiveData(private var query: DatabaseReference, private var eventDa
     private fun updateToRoom(dataSnapshot: DataSnapshot) {
         var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
         if (dataEntity != null) {
-            dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
-            eventDao.update(dataEntity)
+            dataEntity.id = dataRepository.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
+            dataRepository.update(dataEntity)
             value = "事件更新"
         }
         Log.v(TAG, "事件更新:${dataSnapshot.key}")
@@ -75,8 +79,8 @@ class FirebaseLiveData(private var query: DatabaseReference, private var eventDa
     private fun deleteToRoom(dataSnapshot: DataSnapshot) {
         var dataEntity = dataSnapshotToDataEntity(dataSnapshot)
         if (dataEntity != null) {
-            dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode)
-            eventDao.delete(dataEntity)
+            dataEntity.id = dataRepository.getFirebaseCodeToId(dataEntity.firebaseCode)
+            dataRepository.delete(dataEntity)
             value = "事件移除"
             Log.v(TAG, "事件移除:${dataSnapshot.key}")
         }

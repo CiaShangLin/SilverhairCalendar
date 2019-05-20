@@ -32,7 +32,8 @@
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
                     app:title="銀髮智慧行事曆" app:titleTextColor="@color/fui_bgGoogle"
-                    app:navigationIcon="@drawable/ic_calendar"/>
+                    app:navigationIcon="@drawable/ic_calendar"
+                    android:background="@drawable/fui_idp_button_background_twitter"/>
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,12 +64,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            app:srcCompat="@drawable/ic_add_black_24dp"
+            app:srcCompat="@drawable/ic_add"
             android:id="@+id/floatingActionButton"
             app:layout_anchor="@id/appBarLayout"
             app:layout_anchorGravity="bottom|right"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/holo_blue_dark"
+            app:backgroundTint="@color/fui_bgTwitter"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

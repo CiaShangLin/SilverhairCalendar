@@ -1,21 +1,23 @@
 package com.shang.livedata.Firebase
 
+import android.util.Log
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.EventDao
 
-class FirebaseDao(eventDao: EventDao) {
+class FirebaseDao {
 
     private lateinit var query: DatabaseReference
     private lateinit var firebaseLiveData: FirebaseLiveData
 
-    init {//要改
-        if(eventDao.getSetting()!=null){
-            query = FirebaseDatabase.getInstance().getReference(eventDao.getSetting().firebaseCode)
-            firebaseLiveData= FirebaseLiveData(query, eventDao)
-        }
+    constructor(dataRepository: DataRepository) {
+        query = FirebaseDatabase.getInstance().getReference(dataRepository.getSetting().firebaseCode)
+        firebaseLiveData = FirebaseLiveData(query, dataRepository)
+        Log.d("TAG",query.toString()+"\n"+dataRepository.getSetting().firebaseCode)
     }
+
 
     fun getFirebaseData(): FirebaseLiveData {
         return firebaseLiveData

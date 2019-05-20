@@ -44,6 +44,15 @@ class DataRepository {
         return eventDao.getDayToDataEntity(calendarDay)
     }
 
+    fun checkFirebaseCode(firebaseCode: String): Boolean{
+        return eventDao.checkFirebaseCode(firebaseCode)
+    }
+
+    fun getFirebaseCodeToId(firebaseCode: String): Int{
+        return eventDao.getFirebaseCodeToId(firebaseCode)
+    }
+
+
     //Setting
     fun insertSetting(settingEntity: SettingEntity) {
         eventDao.insertSetting(settingEntity)

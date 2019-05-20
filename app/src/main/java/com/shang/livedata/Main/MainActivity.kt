@@ -1,7 +1,11 @@
 package com.shang.livedata.Main
 
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
@@ -29,6 +34,9 @@ import com.shang.livedata.ViewModel.FirebaseViewModel
 
 import kotlinx.android.synthetic.main.activity_main.calendarView
 import kotlinx.android.synthetic.main.nest_layout.*
+import java.sql.Time
+import java.time.LocalDateTime
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -69,18 +77,10 @@ class MainActivity : AppCompatActivity() {
         dataAdapter = DataAdapter(this)
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
-                EditDialog.getInstance(type,dataEntity).show(supportFragmentManager,EditDialog.TAG)
+                EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
             }
         })
         recyclerview.adapter = dataAdapter
-
-
-        saveBt.setOnClickListener {
-            //AddDialog.getInstance(1,"").show(supportFragmentManager, AddDialog.TAG)
-            //SettingDialog.getInstance().show(supportFragmentManager, SettingDialog.TAG)
-            insertDataEntity()
-            //startActivity(Intent(this, ChoiceModeActivity::class.java))
-        }
 
         //appBarLayout
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         floatingActionButton.setOnClickListener {
-
+            AddDialog.getInstance(type, calendarView.selectedDate!!).show(supportFragmentManager, AddDialog.TAG)
         }
 
         when (type) {
@@ -136,6 +136,7 @@ class MainActivity : AppCompatActivity() {
             override fun onChanged(t: CalendarDay?) {
                 dataViewModel.getDay(t!!).observe(this@MainActivity,
                     Observer<MutableList<DataEntity>> { data ->
+                        Log.d(TAG, "onclick calendarView ")
                         dataAdapter.submitList(data)
                     }
                 )
@@ -156,9 +157,9 @@ class MainActivity : AppCompatActivity() {
                 calendarView.removeDecorator(myDayView)
                 calendarView.addDecorator(myDayView)
 
-
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
                 dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
+                Log.d(TAG,"submitList")
             }
         })
 
@@ -167,6 +168,7 @@ class MainActivity : AppCompatActivity() {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
                 override fun onChanged(reslut: String?) {
                     toast(reslut.toString())
+                    //dataAdapter.notifyDataSetChanged()
                 }
             })
         }
@@ -175,48 +177,12 @@ class MainActivity : AppCompatActivity() {
         //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }
 
-    fun insertFirebase() {
-        var setting = dataViewModel.getSetting()
-        for (i in 1..5) {
-            var dataEntity = DataEntity().apply {
-                this.event = "今天要吃藥"
-                this.calendarDay = CalendarDay.from(2019, 5, 12)
-                this.calendarDayString = calendarDayToString(calendarDay)
-                this.hour = i
-                this.minute = i
-                this.type = i % 4
-                this.firebaseCode = setting.firebaseCode
-                this.name = setting.name
-            }
-            firebaseViewModel.pushFirebase(dataEntity)
-        }
-
-    }
-
-    fun insertSetting() {
-        var settingEntity = SettingEntity()
-        settingEntity.apply {
-            this.name = "ShangLin"
-            this.firebaseCode = "TO0GbWYZ51d4RW95HZd3boY0mv62"
-        }
-        dataViewModel.insertSetting(settingEntity)
-    }
-
-    fun insertDataEntity() {
-        var setting = dataViewModel.getSetting()
-        for (i in 1..3) {
-            var dataEntity = DataEntity().apply {
-                this.event = "小翠出來玩"
-                this.calendarDay = CalendarDay.from(2019, 5, 13)
-                this.calendarDayString = calendarDayToString(calendarDay)
-                this.hour = i
-                this.minute = i
-                this.type = i % 4
-                this.firebaseCode = setting.firebaseCode
-                this.name = setting.name
-            }
-            dataViewModel.insert(dataEntity)
-        }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun alarm() {
+        var alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        var intent = Intent()
+        var pendingIntent = PendingIntent.getActivity(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.set(AlarmManager.RTC, Date().time, null)
     }
 
 }

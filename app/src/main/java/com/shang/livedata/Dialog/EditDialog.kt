@@ -61,12 +61,12 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
 
-        var data = arguments?.getParcelable(DATA) as DataEntity
-
-        editNameEt.setText(data.name)
-        editEventEt.setText(data.event)
-        editTimeEt.setText("${data.hour}:${data.minute}")
-        editColorSp.setSelection(data.type)
+        (arguments?.getParcelable(DATA) as DataEntity).let{
+            editNameEt.setText(it.name)
+            editEventEt.setText(it.event)
+            editTimeEt.setText("${it.hour}:${it.minute}")
+            editColorSp.setSelection(it.type)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -106,13 +106,13 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
     }
 
     private fun getDataEntity(): DataEntity { //取得更新後的Data
-        var dataEntity = arguments?.getParcelable("DATA") as DataEntity
+        var dataEntity = arguments?.getParcelable(DATA) as DataEntity
         dataEntity = dataEntity.apply {
             this.name = editNameEt.text.toString()
             this.event = editEventEt.text.toString()
             this.hour = getTime(editTimeEt.text.toString(), 0)
             this.minute = getTime(editTimeEt.text.toString(), 1)
-            this.type = editColorSp.selectedItemPosition;
+            this.type = editColorSp.selectedItemPosition
         }
         return dataEntity
     }

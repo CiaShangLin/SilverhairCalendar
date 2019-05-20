@@ -9,16 +9,12 @@ import com.shang.livedata.Room.EventDao
 import com.shang.livedata.Room.RoomDatabase
 
 class FirebaseRepository{
-    private lateinit var myRoomDatabase: RoomDatabase
-    private lateinit var eventDao: EventDao
     private lateinit var firebaseDao: FirebaseDao
+    private lateinit var dataRepository: DataRepository
 
     constructor(context: Context) {
-        myRoomDatabase = Room.databaseBuilder(context, RoomDatabase::class.java, RoomDatabase.DATABASE_NAME)
-            .allowMainThreadQueries()
-            .build()
-        eventDao = myRoomDatabase.getEventDao()
-        firebaseDao = FirebaseDao(eventDao)
+        dataRepository= DataRepository(context)
+        firebaseDao = FirebaseDao(dataRepository)
     }
 
     //FirebaseDao

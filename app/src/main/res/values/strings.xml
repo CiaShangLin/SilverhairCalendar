@@ -17,7 +17,7 @@
         <item>親</item>
         <item>外</item>
     </string-array>
-    <string name="title_activity_choice_mode">ChoiceModeActivity</string>
+    <string name="title_activity_choice_mode">智慧銀髮行事曆</string>
     <string name="title_activity_family">FamilyActivity</string>
 
 </resources>
