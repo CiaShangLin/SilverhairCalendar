@@ -15,7 +15,6 @@ class FirebaseDao {
     constructor(dataRepository: DataRepository) {
         query = FirebaseDatabase.getInstance().getReference(dataRepository.getSetting().firebaseCode)
         firebaseLiveData = FirebaseLiveData(query, dataRepository)
-        Log.d("TAG",query.toString()+"\n"+dataRepository.getSetting().firebaseCode)
     }
 
 

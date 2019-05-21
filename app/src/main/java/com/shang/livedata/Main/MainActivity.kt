@@ -135,18 +135,17 @@ class MainActivity : AppCompatActivity() {
         //當點擊日曆日期 通知更新
         dataViewModel.currentDate.observe(this, object : Observer<CalendarDay> {
             override fun onChanged(t: CalendarDay?) {
+                Log.v(TAG, "onclick calendarView ")
                 dataViewModel.getDay(t!!).observe(this@MainActivity,
                     Observer<MutableList<DataEntity>> { data ->
-                        Log.d(TAG, "onclick calendarView ")
                         dataAdapter.submitList(data)
                     }
                 )
             }
         })
-        dataViewModel.currentDate.value = calendarView.selectedDate
 
         //Room
-        dataViewModel.getAllDataEntity().observe(this, object : Observer<MutableList<DataEntity>> {
+        dataViewModel.getAllDataEntity().observe(this@MainActivity,object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
                 //清除後再增加　不然會重複蓋上去
                 var myDayView = MyDayView(
@@ -160,7 +159,7 @@ class MainActivity : AppCompatActivity() {
 
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
                 dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
-                Log.d(TAG,"submitList")
+                Log.v(TAG,"submitList")
             }
         })
 
@@ -169,11 +168,11 @@ class MainActivity : AppCompatActivity() {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
                 override fun onChanged(reslut: String?) {
                     toast(reslut.toString())
-                    //dataViewModel.currentDate.value = calendarView.selectedDate
+                    //不知道為什麼EventDao有新增 但是上面的觀察者不會觸發
+                    dataViewModel.currentDate.value = calendarView.selectedDate
                 }
             })
         }
-
         //Recyclerview
         //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }
@@ -186,5 +185,9 @@ class MainActivity : AppCompatActivity() {
         alarmManager.set(AlarmManager.RTC, Date().time, null)
     }
 
+    override fun onResume() {
+        super.onResume()
+        dataViewModel.currentDate.value = calendarView.selectedDate
+    }
 }
 
