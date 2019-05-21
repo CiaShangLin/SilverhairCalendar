@@ -40,6 +40,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    //通知
 
     private val TAG = "MainActivity"
     lateinit var dataViewModel: DataViewModel
@@ -168,7 +169,7 @@ class MainActivity : AppCompatActivity() {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
                 override fun onChanged(reslut: String?) {
                     toast(reslut.toString())
-                    //dataAdapter.notifyDataSetChanged()
+                    dataViewModel.currentDate.value = calendarView.selectedDate
                 }
             })
         }

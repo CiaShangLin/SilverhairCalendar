@@ -26,6 +26,7 @@ import org.jetbrains.anko.toast
 class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
 
 
+    private val TAG = "ChoiceModeActivity"
     private lateinit var model: DataViewModel
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val RC_SIGN_IN = 1
@@ -93,11 +94,11 @@ class ChoiceModeActivity : AppCompatActivity(), View.OnClickListener {
         if (requestCode == RC_SIGN_IN) {
             val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
-               FirebaseAuth.getInstance().currentUser.let {
+                FirebaseAuth.getInstance().currentUser.let {
                     model.insertSetting(SettingEntity().apply {
                         this.firebaseCode = it?.uid.toString()
                         this.name = it?.displayName.toString()
-                        Log.d("TAG","$firebaseCode $name" )
+                        Log.d(TAG, "$firebaseCode $name")
                     })
                 }
                 startActivity(Intent(this@ChoiceModeActivity, MainActivity::class.java).apply {
