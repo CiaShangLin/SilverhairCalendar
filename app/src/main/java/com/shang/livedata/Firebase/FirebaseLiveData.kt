@@ -73,7 +73,7 @@ class FirebaseLiveData(private var query: DatabaseReference, private var dataRep
             dataRepository.update(dataEntity)
             value = "事件更新"
         }
-        Log.v(TAG, "事件更新:${dataSnapshot.key}")
+
     }
 
     private fun deleteToRoom(dataSnapshot: DataSnapshot) {
@@ -82,7 +82,6 @@ class FirebaseLiveData(private var query: DatabaseReference, private var dataRep
             dataEntity.id = dataRepository.getFirebaseCodeToId(dataEntity.firebaseCode)
             dataRepository.delete(dataEntity)
             value = "事件移除"
-            Log.v(TAG, "事件移除:${dataSnapshot.key}")
         }
     }
 

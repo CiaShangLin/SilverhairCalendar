@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
                 override fun onChanged(reslut: String?) {
                     toast(reslut.toString())
-                    dataViewModel.currentDate.value = calendarView.selectedDate
+                    //dataViewModel.currentDate.value = calendarView.selectedDate
                 }
             })
         }
