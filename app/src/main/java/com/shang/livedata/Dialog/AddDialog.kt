@@ -1,8 +1,11 @@
 package com.shang.livedata.Dialog
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
+import com.shang.livedata.MyBroadcastReceiver
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.DateConverter
@@ -61,6 +65,10 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
         settingEntity = dataViewModel.getSetting()
         settingNameEt.setText(settingEntity.name)
+
+        dataViewModel.myBroadCastReceiver.observe(this, androidx.lifecycle.Observer {
+
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -110,6 +118,7 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
                 firebaseViewModel.pushFirebase(dataEntity)
             }
         }
+        setTimeClock()
         dismiss()
     }
 
@@ -126,6 +135,18 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
             ).show()
         }
         return true
+    }
+
+
+    fun setTimeClock() {
+        var alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        var intent = Intent(context, MyBroadcastReceiver::class.java).apply {
+            this.action = "time"
+        }
+
+
+        var pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        alarmManager.set(AlarmManager.RTC, Date().time, pendingIntent)
     }
 
 }

@@ -13,6 +13,7 @@ import com.shang.livedata.Room.SettingEntity
 class DataViewModel : AndroidViewModel {
     private lateinit var repository: DataRepository
     var currentDate: MutableLiveData<CalendarDay> = MutableLiveData()
+    var myBroadCastReceiver: MutableLiveData<String> = MutableLiveData()
 
     constructor(application: Application) : super(application) {
         repository = DataRepository(application)

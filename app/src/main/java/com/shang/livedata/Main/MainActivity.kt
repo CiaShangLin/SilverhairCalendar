@@ -1,42 +1,28 @@
 package com.shang.livedata.Main
 
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.Dialog.AddDialog
 import com.shang.livedata.Dialog.EditDialog
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
-import com.shang.livedata.Room.DateConverter
-import com.shang.livedata.Room.SettingEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
 
 import kotlinx.android.synthetic.main.activity_main.calendarView
 import kotlinx.android.synthetic.main.nest_layout.*
-import java.sql.Time
-import java.time.LocalDateTime
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -177,17 +163,12 @@ class MainActivity : AppCompatActivity() {
         //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun alarm() {
-        var alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        var intent = Intent()
-        var pendingIntent = PendingIntent.getActivity(this, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.set(AlarmManager.RTC, Date().time, null)
-    }
+
 
     override fun onResume() {
         super.onResume()
         dataViewModel.currentDate.value = calendarView.selectedDate
+
     }
 }
 

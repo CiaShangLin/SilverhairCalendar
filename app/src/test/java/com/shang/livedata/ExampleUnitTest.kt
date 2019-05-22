@@ -12,6 +12,17 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        var a: a? = a()
+        println(a)
+        a.let {
+            a?.z
+            a?.y
+        }
+        println(a)
+    }
+
+    class a() {
+        var z: String? = "zzz"
+        var y: String? = null
     }
 }
