@@ -4,12 +4,14 @@ package com.shang.livedata.Main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
@@ -47,6 +49,23 @@ class MainActivity : AppCompatActivity() {
 
         type = intent.getIntExtra(ChoiceModeActivity.TYPE, 1)
 
+        initView()
+        when (type) {
+            ChoiceModeActivity.MainActivityMode -> {
+                initModel()
+            }
+            ChoiceModeActivity.FamilyActivityMode -> {
+                if (dataViewModel.getSetting() == null) {
+                    SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
+                    Log.v(TAG, "沒有Setting")
+                } else {
+                    initModel()
+                }
+            }
+        }
+    }
+
+    private fun initView(){
         //CalendarView
         calendarView.setTitleFormatter { day ->
             StringBuffer().append(day.year).append("年").append(day.month).append("月")
@@ -68,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         recyclerview.adapter = dataAdapter
+
 
         //appBarLayout
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -96,20 +116,6 @@ class MainActivity : AppCompatActivity() {
 
         floatingActionButton.setOnClickListener {
             AddDialog.getInstance(type, calendarView.selectedDate!!).show(supportFragmentManager, AddDialog.TAG)
-        }
-
-        when (type) {
-            ChoiceModeActivity.MainActivityMode -> {
-                initModel()
-            }
-            ChoiceModeActivity.FamilyActivityMode -> {
-                if (dataViewModel.getSetting() == null) {
-                    SettingDialog.getInstance(settingCallback).show(supportFragmentManager, SettingDialog.TAG)
-                    Log.d("TAG", "沒有Setting")
-                } else {
-                    initModel()
-                }
-            }
         }
     }
 
@@ -159,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+
         //Recyclerview
         //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)
     }

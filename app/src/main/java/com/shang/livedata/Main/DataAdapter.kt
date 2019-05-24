@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,6 @@ import com.shang.livedata.ViewModel.DataViewModel
 import java.time.LocalTime
 
 class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBACK) {
-
     companion object {
         private var DIFF_CALLBACK = object : DiffUtil.ItemCallback<DataEntity>() {
             override fun areItemsTheSame(oldItem: DataEntity, newItem: DataEntity): Boolean {
@@ -46,14 +46,14 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
         colorArray = context.resources.getIntArray(R.array.colorArray)
         typeArray = context.resources.getStringArray(R.array.typeName)
     }
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
         var view = LayoutInflater.from(parent.context).inflate(R.layout.data_item, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         var dataEntity = getItem(position)
         if (dataEntity != null) {
             holder.eventTv.text = dataEntity.event
@@ -63,13 +63,11 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
             holder.typeTv.background = getTypeBackground(dataEntity.type)
             holder.itemView.setOnClickListener {
                 if (listener != null)
-                    listener.onItemClick(getDataAt(position))
+                    listener.onItemClick(getItem(position))
             }
         }
-    }
 
-    fun getDataAt(position: Int): DataEntity {
-        return getItem(position)
+
     }
 
     interface OnItemClickListener {
@@ -87,6 +85,9 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
         var typeTv = itemView.findViewById<TextView>(R.id.typeTv)
     }
 
+
+
+    //做滑動刪除的動畫 先不用
     fun getSimpleCallback(model: DataViewModel): ItemTouchHelper.SimpleCallback {
         var simpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
@@ -98,7 +99,7 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                model.delete(getDataAt(viewHolder.position))
+                model.delete(getItem(viewHolder.position))
             }
         }
         return simpleCallback

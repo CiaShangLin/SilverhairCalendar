@@ -98,7 +98,8 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
     override fun onClick(p0: View?) {
         var type = arguments?.getInt(TYPE)
         var calendarString = arguments?.getString(TIME)
-        var dataEntity = DataEntity().apply {
+        var dataEntity = DataEntity()
+        with(dataEntity) {
             this.event = eventEt.text.toString()
             this.type = colorSp.selectedItemPosition
             this.hour = getTime(timeEt.text.toString(), 0)
@@ -108,17 +109,19 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
             this.firebaseCode = settingEntity.firebaseCode
             this.name = settingNameEt.text.toString()
         }
+
         when (type) {
             ChoiceModeActivity.MainActivityMode -> {
                 toast("新增本地成功")
                 dataViewModel.insert(dataEntity)
+                setTimeClock(dataEntity)
             }
             ChoiceModeActivity.FamilyActivityMode -> {
                 toast("新增遠端成功")
                 firebaseViewModel.pushFirebase(dataEntity)
             }
         }
-        setTimeClock()
+
         dismiss()
     }
 
@@ -138,13 +141,14 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
     }
 
 
-    fun setTimeClock() {
+    //設定提醒
+    fun setTimeClock(dataEntity: DataEntity) {
         var alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         var intent = Intent(context, MyBroadcastReceiver::class.java).apply {
-            this.action = "time"
+            this.action = MyBroadcastReceiver.ACTION
+            this.putExtra(MyBroadcastReceiver.TITLE, dataEntity.name)
+            this.putExtra(MyBroadcastReceiver.CONTENT, dataEntity.event)
         }
-
-
         var pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.set(AlarmManager.RTC, Date().time, pendingIntent)
     }
