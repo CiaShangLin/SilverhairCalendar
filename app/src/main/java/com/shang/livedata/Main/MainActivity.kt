@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
@@ -19,6 +18,7 @@ import com.shang.livedata.Dialog.AddDialog
 import com.shang.livedata.Dialog.EditDialog
 import com.shang.livedata.Dialog.SettingDialog
 import com.shang.livedata.R
+import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
@@ -28,8 +28,6 @@ import kotlinx.android.synthetic.main.nest_layout.*
 
 
 class MainActivity : AppCompatActivity() {
-    //通知
-
     private val TAG = "MainActivity"
     lateinit var dataViewModel: DataViewModel
     lateinit var firebaseViewModel: FirebaseViewModel
@@ -40,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private var type: Int = 1
+    private lateinit var emptyDataAdapter: EmptyDataAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initView(){
+    private fun initView() {
         //CalendarView
         calendarView.setTitleFormatter { day ->
             StringBuffer().append(day.year).append("年").append(day.month).append("月")
@@ -75,18 +74,27 @@ class MainActivity : AppCompatActivity() {
         calendarView.setOnDateChangedListener { widget, date, selected ->
             dataViewModel.currentDate.value = date
         }
-        calendarView.addDecorator(TodayView(this@MainActivity))
+        calendarView.addDecorator(TodayView(this@MainActivity,resources.getDrawable(R.drawable.ic_ellipsis)))
 
 
         //RecyclerView
         recyclerview.layoutManager = LinearLayoutManager(this)
-        dataAdapter = DataAdapter(this)
+        /*dataAdapter = DataAdapter(this)
         dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
                 EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
             }
         })
-        recyclerview.adapter = dataAdapter
+        recyclerview.adapter = dataAdapter*/
+        emptyDataAdapter = EmptyDataAdapter(this)
+        emptyDataAdapter.setEmptyView(LayoutInflater.from(this).inflate(R.layout.nothing_item,recyclerview,false))
+        emptyDataAdapter.setData(mutableListOf())
+        emptyDataAdapter.setOnItemClickListener(object : EmptyDataAdapter.OnItemClickListener{
+            override fun onItemClick(dataEntity: DataEntity) {
+                EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
+            }
+        })
+        recyclerview.adapter = emptyDataAdapter
 
 
         //appBarLayout
@@ -130,28 +138,28 @@ class MainActivity : AppCompatActivity() {
                 Log.v(TAG, "onclick calendarView ")
                 dataViewModel.getDay(t!!).observe(this@MainActivity,
                     Observer<MutableList<DataEntity>> { data ->
-                        dataAdapter.submitList(data)
+                        //dataAdapter.submitList(data)
+                        emptyDataAdapter.setData(data)
                     }
                 )
             }
         })
 
         //Room
-        dataViewModel.getAllDataEntity().observe(this@MainActivity,object : Observer<MutableList<DataEntity>> {
+        dataViewModel.getAllDataEntity().observe(this@MainActivity, object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
                 //清除後再增加　不然會重複蓋上去
                 var myDayView = MyDayView(
                     this@MainActivity,
-                    data.map { it.calendarDay }.toHashSet(),
-                    resources.getColor(R.color.blue),
-                    resources.getDrawable(R.drawable.ic_ellipsis)
+                    data.map { it.calendarDay }.toHashSet()
                 )
                 calendarView.removeDecorator(myDayView)
                 calendarView.addDecorator(myDayView)
 
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
-                dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
-                Log.v(TAG,"submitList")
+                //dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
+                emptyDataAdapter.setData(data.filter {it.calendarDay == calendarView.selectedDate  })
+                Log.v(TAG, "submitList")
             }
         })
 
@@ -171,11 +179,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onResume() {
         super.onResume()
         dataViewModel.currentDate.value = calendarView.selectedDate
-
     }
 }
 

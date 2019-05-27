@@ -1,5 +1,6 @@
 package com.shang.livedata.Main
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
@@ -14,15 +15,12 @@ import com.shang.livedata.R
 
 class MyDayView : DayViewDecorator {
     private var mHashSet = HashSet<CalendarDay>()
-    private lateinit var drawable: Drawable
     private var color: Int = R.color.blue
-    private lateinit var context:Context
 
-    constructor(context:Context,hashSet: HashSet<CalendarDay>, color: Int, drawable: Drawable) {
-        this.drawable = drawable
-        this.color = color
-        this.mHashSet=hashSet
-        this.context=context
+    @SuppressLint("ResourceAsColor")
+    constructor(context: Context, hashSet: HashSet<CalendarDay>) {
+        this.color = context.resources.getColor(R.color.blue)
+        this.mHashSet = hashSet
     }
 
     override fun shouldDecorate(day: CalendarDay?): Boolean {
@@ -30,11 +28,11 @@ class MyDayView : DayViewDecorator {
     }
 
     override fun decorate(view: DayViewFacade?) {
-        //view?.addSpan(DotSpan(10f,color))
+        view?.addSpan(DotSpan(5f, color))
 
         //view?.setBackgroundDrawable(drawable)
 
-        view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context,R.color.blue)))
+        //view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context,R.color.blue)))
 
     }
 }

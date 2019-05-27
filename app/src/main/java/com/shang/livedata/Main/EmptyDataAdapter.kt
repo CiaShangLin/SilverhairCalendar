@@ -1,4 +1,4 @@
-package com.shang.livedata
+package com.shang.livedata.Main
 
 import android.content.Context
 import android.graphics.PorterDuff
@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.shang.livedata.Main.DataAdapter
+import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 
 class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -20,7 +19,7 @@ class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView
     private var emptyView: View? = null
     private val ITEM_TYPE_EMPTY: Int = 0
     private val ITEM_TYPE_MORMAL: Int = 1
-    private lateinit var listener: EmptyDataAdapter.OnItemClickListener
+    private lateinit var listener: OnItemClickListener
     private lateinit var colorArray: IntArray
     private lateinit var typeArray: Array<String>
 
@@ -33,13 +32,16 @@ class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView
     }
 
     fun setData(dataList: List<DataEntity>) {
-        this.dataList.clear()
+        /*this.dataList.clear()
         this.dataList.addAll(dataList)
-        notifyItemRangeChanged(0,this.dataList.size)
+        notifyItemRangeChanged(0, this.dataList.size)*/
+
+        this.dataList=dataList.toMutableList()
+        notifyDataSetChanged()
     }
 
-    fun setEmptyView(view:View){
-        emptyView=view
+    fun setEmptyView(view: View) {
+        emptyView = view
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -51,11 +53,11 @@ class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position)==ITEM_TYPE_EMPTY)
+        if (getItemViewType(position) == ITEM_TYPE_EMPTY)
             return
-        else{
-            var dataHolder=holder as ViewHolder
-            var dataEntity=dataList.get(position)
+        else {
+            var dataHolder = holder as ViewHolder
+            var dataEntity = dataList.get(position)
             dataHolder.eventTv.text = dataEntity.event
             dataHolder.timeTv.text = getTime(dataEntity.hour, dataEntity.minute)
             dataHolder.nameTv.text = dataEntity.name

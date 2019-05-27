@@ -1,12 +1,8 @@
 package com.shang.livedata.Main
 
 import android.content.Context
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.ShapeDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.ViewModel.DataViewModel
-import java.time.LocalTime
 
 class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.ViewHolder>(DIFF_CALLBACK) {
     companion object {
@@ -46,6 +41,7 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
         colorArray = context.resources.getIntArray(R.array.colorArray)
         typeArray = context.resources.getStringArray(R.array.typeName)
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         var view = LayoutInflater.from(parent.context).inflate(R.layout.data_item, parent, false)
@@ -74,7 +70,7 @@ class DataAdapter(var context: Context) : ListAdapter<DataEntity, DataAdapter.Vi
         fun onItemClick(dataEntity: DataEntity)
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener) {
+    fun setOnItemClickListener(listener: DataAdapter.OnItemClickListener) {
         this.listener = listener
     }
 

@@ -52,11 +52,11 @@
     <androidx.appcompat.widget.Toolbar
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@drawable/fui_idp_button_background_twitter"
             android:theme="?attr/actionBarTheme"
             android:minHeight="?attr/actionBarSize"
             android:id="@+id/toolbar3"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:title="Setting"
+            app:layout_constraintStart_toStartOf="parent" app:title="設定"
             app:navigationIcon="@drawable/ic_settings"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

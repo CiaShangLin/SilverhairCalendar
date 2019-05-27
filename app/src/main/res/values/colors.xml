@@ -15,4 +15,7 @@
         <item>#FF00FF</item>
     </array>
 
+    <color name="today">#FF0000</color>
+    <color name="setting">#00DD00</color>
+
 </resources>
