@@ -80,13 +80,6 @@ class MainActivity : AppCompatActivity() {
 
         //RecyclerView
         recyclerview.layoutManager = LinearLayoutManager(this)
-        /*dataAdapter = DataAdapter(this)
-        dataAdapter.setOnItemClickListener(object : DataAdapter.OnItemClickListener {
-            override fun onItemClick(dataEntity: DataEntity) {
-                EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
-            }
-        })
-        recyclerview.adapter = dataAdapter*/
         emptyDataAdapter = EmptyDataAdapter(this)
         emptyDataAdapter.setEmptyView(LayoutInflater.from(this).inflate(R.layout.nothing_item,recyclerview,false))
         emptyDataAdapter.setData(mutableListOf())
@@ -168,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         if (dataViewModel.getSetting() != null) {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<FirebaseData> {
                 override fun onChanged(reslut: FirebaseData) {
+                    toast(reslut.getToast(reslut.type))
                     dataViewModel.firebaseDao(reslut)
                 }
             })
