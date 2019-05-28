@@ -1,12 +1,10 @@
 package com.shang.livedata.Dialog
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -23,8 +21,9 @@ import com.shang.livedata.ViewModel.FirebaseViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
 import kotlinx.android.synthetic.main.dialog_edit.*
 import org.jetbrains.anko.support.v4.toast
+import java.util.*
 
-class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickListener {
+class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickListener, View.OnTouchListener {
 
 
     companion object {
@@ -89,6 +88,8 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         editTb.inflateMenu(R.menu.menu_dialog_edit)
         editTb.setNavigationOnClickListener { dismiss() }
         editTb.setOnMenuItemClickListener(this)
+
+        editTimeEt.setOnTouchListener(this)
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -104,7 +105,21 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         }
         dismiss()
         return true
+    }
 
+    override fun onTouch(p0: View?, motionEvent: MotionEvent): Boolean {
+        if (motionEvent.action == 0) {  //0=點下去 1=按起來 用click的話會彈出鍵盤
+            TimePickerDialog(
+                context,
+                TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+                    editTimeEt.setText("$hourOfDay:$minute")
+                },
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                Calendar.getInstance().get(Calendar.MINUTE),
+                true
+            ).show()
+        }
+        return true
     }
 
     private fun getDataEntity(): DataEntity { //取得更新後的Data
