@@ -1,10 +1,8 @@
-package com.shang.livedata
+package com.shang.livedata.TimeClock
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import com.shang.livedata.Main.MainActivity
 
 class MyBroadcastReceiver : BroadcastReceiver() {
     companion object{

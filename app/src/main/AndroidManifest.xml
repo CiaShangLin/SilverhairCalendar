@@ -30,7 +30,7 @@
                   android:theme="@style/AppTheme2.NoActionBar">
         </activity>
 
-        <receiver android:name=".MyBroadcastReceiver">
+        <receiver android:name=".TimeClock.MyBroadcastReceiver">
         </receiver>
     </application>
 

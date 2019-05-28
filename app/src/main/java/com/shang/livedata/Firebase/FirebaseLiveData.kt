@@ -3,10 +3,8 @@ package com.shang.livedata.Firebase
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.*
-import com.shang.livedata.MyAlarmManager
 import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
-import com.shang.livedata.Room.EventDao
 
 class FirebaseLiveData(private var query: DatabaseReference, private var dataRepository: DataRepository) : LiveData<String>() {
 

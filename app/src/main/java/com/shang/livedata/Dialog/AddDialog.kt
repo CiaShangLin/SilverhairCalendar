@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,11 +16,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.shang.livedata.ChioceMode.ChoiceModeActivity
-import com.shang.livedata.MyBroadcastReceiver
+import com.shang.livedata.TimeClock.MyBroadcastReceiver
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.DateConverter
 import com.shang.livedata.Room.SettingEntity
+import com.shang.livedata.TimeClock.MyAlarmManager
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
@@ -65,10 +67,6 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
         settingEntity = dataViewModel.getSetting()
         settingNameEt.setText(settingEntity.name)
-
-        dataViewModel.myBroadCastReceiver.observe(this, androidx.lifecycle.Observer {
-
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,39 +88,24 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
         addBt.setOnClickListener(this)
     }
 
-    private fun getTime(timeEt: String, type: Int): Int {
-        val timeSp = timeEt.split(":")
-        return timeSp[type].toInt()
-    }
-
     override fun onClick(p0: View?) {
         var type = arguments?.getInt(TYPE)
         var calendarString = arguments?.getString(TIME)
-        var dataEntity = DataEntity()
-        with(dataEntity) {
-            this.event = eventEt.text.toString()
-            this.type = colorSp.selectedItemPosition
-            this.hour = getTime(timeEt.text.toString(), 0)
-            this.minute = getTime(timeEt.text.toString(), 1)
-            this.calendarDay = DateConverter.stringToCalendarDay(calendarString!!)
-            this.calendarDayString = calendarString!!
-            this.firebaseCode = settingEntity.firebaseCode
-            this.name = settingNameEt.text.toString()
-        }
-
-        when (type) {
-            ChoiceModeActivity.MainActivityMode -> {
-                toast("新增本地成功")
-                dataViewModel.insert(dataEntity)
-                setTimeClock(dataEntity)
+        var dataEntity = getDataEntity(calendarString)
+        if (dataEntity != null) {
+            when (type) {
+                ChoiceModeActivity.MainActivityMode -> {
+                    toast("新增本地成功")
+                    dataViewModel.insert(dataEntity)
+                    MyAlarmManager(context).setTimeClock(dataEntity)
+                }
+                ChoiceModeActivity.FamilyActivityMode -> {
+                    toast("新增遠端成功")
+                    firebaseViewModel.pushFirebase(dataEntity)
+                }
             }
-            ChoiceModeActivity.FamilyActivityMode -> {
-                toast("新增遠端成功")
-                firebaseViewModel.pushFirebase(dataEntity)
-            }
+            dismiss()
         }
-
-        dismiss()
     }
 
     override fun onTouch(p0: View?, motionEvent: MotionEvent): Boolean {
@@ -140,17 +123,31 @@ class AddDialog : DialogFragment(), View.OnClickListener, View.OnTouchListener {
         return true
     }
 
-
-    //設定提醒
-    fun setTimeClock(dataEntity: DataEntity) {
-        var alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        var intent = Intent(context, MyBroadcastReceiver::class.java).apply {
-            this.action = MyBroadcastReceiver.ACTION
-            this.putExtra(MyBroadcastReceiver.TITLE, dataEntity.name)
-            this.putExtra(MyBroadcastReceiver.CONTENT, dataEntity.event)
+    //取得要insert的dataEntity
+    private fun getDataEntity(calendarString: String?): DataEntity? {
+        var dataEntity = DataEntity()
+        try {
+            with(dataEntity) {
+                this.event = eventEt.text.toString()
+                this.type = colorSp.selectedItemPosition
+                this.hour = getTime(timeEt.text.toString(), 0)
+                this.minute = getTime(timeEt.text.toString(), 1)
+                this.calendarDay = DateConverter.stringToCalendarDay(calendarString!!)
+                this.calendarDayString = calendarString!!
+                this.firebaseCode = settingEntity.firebaseCode
+                this.name = settingNameEt.text.toString()
+            }
+        } catch (e: Exception) {
+            toast(e.message.toString())
+            Log.d(TAG,"錯誤捕捉:${e.message.toString()}")
+            return null
         }
-        var pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.set(AlarmManager.RTC, Date().time, pendingIntent)
+        return dataEntity
+    }
+
+    private fun getTime(timeEt: String, type: Int): Int {
+        val timeSp = timeEt.split(":")
+        return timeSp[type].toInt()
     }
 
 }

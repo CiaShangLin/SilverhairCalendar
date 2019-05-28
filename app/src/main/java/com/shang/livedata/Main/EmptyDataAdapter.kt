@@ -32,12 +32,15 @@ class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView
     }
 
     fun setData(dataList: List<DataEntity>) {
+        //這個會引發抱錯 前後資料不一致
         /*this.dataList.clear()
         this.dataList.addAll(dataList)
-        notifyItemRangeChanged(0, this.dataList.size)*/
+        notifyItemRangeInserted(0, this.dataList.size)*/
 
         this.dataList=dataList.toMutableList()
         notifyDataSetChanged()
+
+
     }
 
     fun setEmptyView(view: View) {

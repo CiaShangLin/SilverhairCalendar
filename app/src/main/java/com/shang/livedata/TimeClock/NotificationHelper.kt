@@ -1,4 +1,4 @@
-package com.shang.livedata
+package com.shang.livedata.TimeClock
 
 import android.content.Context
 import android.content.ContextWrapper
@@ -7,7 +7,9 @@ import android.app.NotificationManager
 import android.app.NotificationChannel
 import android.os.Build
 import android.annotation.TargetApi
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
+import com.shang.livedata.R
 
 
 class NotificationHelper : ContextWrapper {
@@ -25,7 +27,9 @@ class NotificationHelper : ContextWrapper {
 
     @TargetApi(Build.VERSION_CODES.O)
     private fun createChannel() {
-        val channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+        val channel = NotificationChannel(
+            channelID,
+            channelName, NotificationManager.IMPORTANCE_DEFAULT)
         getManager().createNotificationChannel(channel)
     }
 
@@ -37,7 +41,9 @@ class NotificationHelper : ContextWrapper {
     }
 
     fun getChannelNotification(title:String,content:String): NotificationCompat.Builder {
-        return NotificationCompat.Builder(applicationContext, channelID)
+        return NotificationCompat.Builder(applicationContext,
+            channelID
+        )
             .setContentTitle(title)
             .setContentText(content)
             .setSmallIcon(R.drawable.ic_calendar)

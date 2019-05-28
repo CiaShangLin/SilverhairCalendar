@@ -9,13 +9,13 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.shang.livedata.R
 
-class TodayView(var context: Context,var drawable:Drawable) : DayViewDecorator {
+class TodayView(var context: Context) : DayViewDecorator {
     override fun shouldDecorate(day: CalendarDay?): Boolean {
         return day == CalendarDay.today()
     }
 
     override fun decorate(view: DayViewFacade?) {
-        //view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.today)))
-        view?.setBackgroundDrawable(drawable)
+        view?.addSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.today)))
+        view?.setBackgroundDrawable(ContextCompat.getDrawable(context,R.drawable.ic_circle_outline)!!)
     }
 }

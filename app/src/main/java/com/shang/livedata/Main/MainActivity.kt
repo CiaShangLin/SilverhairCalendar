@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         calendarView.setOnDateChangedListener { widget, date, selected ->
             dataViewModel.currentDate.value = date
         }
-        calendarView.addDecorator(TodayView(this@MainActivity,resources.getDrawable(R.drawable.ic_ellipsis)))
+        calendarView.addDecorator(TodayView(this@MainActivity))
 
 
         //RecyclerView
