@@ -66,13 +66,14 @@ class DataRepository {
     }
 
     //Firebase
-    fun firebaseDao(firebaseData: FirebaseData) {
+    fun firebaseDao(firebaseData: FirebaseData):String {
         when(firebaseData.type){
             FirebaseData.TYPE_INSERT->{
                 var dataEntity=firebaseData.dataSnapshotToDataEntity(firebaseData.data)
                 //檢查firebaseCode是因為每次onActive他都會跑一次
                 if(!eventDao.checkFirebaseCode(dataEntity.firebaseCode)){
                     eventDao.insert(dataEntity)
+                    return "事件新增"
                 }
             }
             FirebaseData.TYPE_DELETE->{
@@ -80,6 +81,7 @@ class DataRepository {
                 if (dataEntity != null) {
                     dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode)
                     eventDao.delete(dataEntity)
+                    return "事件刪除"
                 }
             }
             FirebaseData.TYPE_UPDATE->{
@@ -87,16 +89,19 @@ class DataRepository {
                 if (dataEntity != null) {
                     dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
                     eventDao.update(dataEntity)
+                    return "事件更新"
                 }
             }
             FirebaseData.TYPE_CANCEL->{
-
+                return "事件取消"
             }
             FirebaseData.TYPE_MOVE->{
-
+                return "事件移動"
             }
         }
+        return ""
     }
+
 
 
 }

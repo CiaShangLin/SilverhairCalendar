@@ -17,6 +17,7 @@ import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.R
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.SettingEntity
+import com.shang.livedata.TimeClock.MyAlarmManager
 import com.shang.livedata.ViewModel.DataViewModel
 import com.shang.livedata.ViewModel.FirebaseViewModel
 import kotlinx.android.synthetic.main.dialog_add.*
@@ -95,6 +96,7 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         when (item.itemId) {
             R.id.menu_save -> {
                 save(type, getDataEntity())
+                MyAlarmManager(context).setTimeClock(getDataEntity())
             }
             R.id.menu_delete -> {
                 delete(type, getDataEntity())

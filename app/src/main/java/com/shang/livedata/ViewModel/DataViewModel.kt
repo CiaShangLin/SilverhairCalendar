@@ -54,9 +54,10 @@ class DataViewModel : AndroidViewModel {
     }
 
     //Firebase
-    fun firebaseDao(firebaseData:FirebaseData){
-        repository.firebaseDao(firebaseData)
+    fun firebaseDao(firebaseData:FirebaseData):String{
+        return repository.firebaseDao(firebaseData)
     }
+
 
 
 }

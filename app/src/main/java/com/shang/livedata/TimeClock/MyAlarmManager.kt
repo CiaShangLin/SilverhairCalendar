@@ -28,6 +28,10 @@ class MyAlarmManager(private var context: Context?) {
         alarmManager.set(AlarmManager.RTC_WAKEUP, getCalendarTime(dataEntity), pendingIntent)
     }
 
+    fun cancelTimeClock(){
+        //alarmManager.cancel(null)
+    }
+
 
     private fun getCalendarTime(dataEntity: DataEntity): Long {
         var calendarDay = DateConverter.stringToCalendarDay(dataEntity.calendarDayString)

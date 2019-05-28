@@ -81,9 +81,9 @@ class MainActivity : AppCompatActivity() {
         //RecyclerView
         recyclerview.layoutManager = LinearLayoutManager(this)
         emptyDataAdapter = EmptyDataAdapter(this)
-        emptyDataAdapter.setEmptyView(LayoutInflater.from(this).inflate(R.layout.nothing_item,recyclerview,false))
+        emptyDataAdapter.setEmptyView(LayoutInflater.from(this).inflate(R.layout.nothing_item, recyclerview, false))
         emptyDataAdapter.setData(mutableListOf())
-        emptyDataAdapter.setOnItemClickListener(object : EmptyDataAdapter.OnItemClickListener{
+        emptyDataAdapter.setOnItemClickListener(object : EmptyDataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
                 EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
             }
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
 
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
                 //dataAdapter.submitList(data.filter { it.calendarDay == calendarView.selectedDate })
-                emptyDataAdapter.setData(data.filter {it.calendarDay == calendarView.selectedDate  })
+                emptyDataAdapter.setData(data.filter { it.calendarDay == calendarView.selectedDate })
                 Log.v(TAG, "submitList")
             }
         })
@@ -160,9 +160,10 @@ class MainActivity : AppCompatActivity() {
         //Firebase
         if (dataViewModel.getSetting() != null) {
             firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<FirebaseData> {
-                override fun onChanged(reslut: FirebaseData) {
-                    toast(reslut.getToast(reslut.type))
-                    dataViewModel.firebaseDao(reslut)
+                override fun onChanged(firebaseData: FirebaseData) {
+                    var result = dataViewModel.firebaseDao(firebaseData)
+                    if (!result.equals(""))
+                        toast(result)
                 }
             })
         }
