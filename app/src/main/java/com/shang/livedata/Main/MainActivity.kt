@@ -17,6 +17,7 @@ import com.shang.livedata.ChioceMode.ChoiceModeActivity
 import com.shang.livedata.Dialog.AddDialog
 import com.shang.livedata.Dialog.EditDialog
 import com.shang.livedata.Dialog.SettingDialog
+import com.shang.livedata.Firebase.FirebaseData
 import com.shang.livedata.R
 import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
@@ -165,11 +166,9 @@ class MainActivity : AppCompatActivity() {
 
         //Firebase
         if (dataViewModel.getSetting() != null) {
-            firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<String> {
-                override fun onChanged(reslut: String?) {
-                    toast(reslut.toString())
-                    //不知道為什麼EventDao有新增 但是上面的觀察者不會觸發
-                    dataViewModel.currentDate.value = calendarView.selectedDate
+            firebaseViewModel.getFirebaseLiveData().observe(this, object : Observer<FirebaseData> {
+                override fun onChanged(reslut: FirebaseData) {
+                    dataViewModel.firebaseDao(reslut)
                 }
             })
         }

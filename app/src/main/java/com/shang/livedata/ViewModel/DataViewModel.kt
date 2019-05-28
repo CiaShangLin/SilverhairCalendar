@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.shang.livedata.Firebase.FirebaseData
 import com.shang.livedata.Firebase.FirebaseLiveData
 import com.shang.livedata.Repository.DataRepository
 import com.shang.livedata.Room.DataEntity
@@ -50,6 +51,11 @@ class DataViewModel : AndroidViewModel {
 
     fun updateSetting(settingEntity: SettingEntity) {
         repository.updateSetting(settingEntity)
+    }
+
+    //Firebase
+    fun firebaseDao(firebaseData:FirebaseData){
+        repository.firebaseDao(firebaseData)
     }
 
 

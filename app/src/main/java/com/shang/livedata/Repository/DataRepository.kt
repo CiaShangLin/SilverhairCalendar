@@ -4,8 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.shang.livedata.Firebase.FirebaseDao
-import com.shang.livedata.Firebase.FirebaseLiveData
+import com.shang.livedata.Firebase.FirebaseData
 import com.shang.livedata.Room.DataEntity
 import com.shang.livedata.Room.EventDao
 import com.shang.livedata.Room.RoomDatabase
@@ -44,11 +43,11 @@ class DataRepository {
         return eventDao.getDayToDataEntity(calendarDay)
     }
 
-    fun checkFirebaseCode(firebaseCode: String): Boolean{
+    fun checkFirebaseCode(firebaseCode: String): Boolean {
         return eventDao.checkFirebaseCode(firebaseCode)
     }
 
-    fun getFirebaseCodeToId(firebaseCode: String): Int{
+    fun getFirebaseCodeToId(firebaseCode: String): Int {
         return eventDao.getFirebaseCodeToId(firebaseCode)
     }
 
@@ -62,8 +61,41 @@ class DataRepository {
         return eventDao.getSetting()
     }
 
-    fun updateSetting(settingEntity: SettingEntity){
+    fun updateSetting(settingEntity: SettingEntity) {
         eventDao.updateSetting(settingEntity)
+    }
+
+    //Firebase
+    fun firebaseDao(firebaseData: FirebaseData) {
+        when(firebaseData.type){
+            FirebaseData.TYPE_INSERT->{
+                var dataEntity=firebaseData.dataSnapshotToDataEntity(firebaseData.data)
+                //檢查firebaseCode是因為每次onActive他都會跑一次
+                if(!eventDao.checkFirebaseCode(dataEntity.firebaseCode)){
+                    eventDao.insert(dataEntity)
+                }
+            }
+            FirebaseData.TYPE_DELETE->{
+                var dataEntity = firebaseData.dataSnapshotToDataEntity(firebaseData.data)
+                if (dataEntity != null) {
+                    dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode)
+                    eventDao.delete(dataEntity)
+                }
+            }
+            FirebaseData.TYPE_UPDATE->{
+                var dataEntity = firebaseData.dataSnapshotToDataEntity(firebaseData.data)
+                if (dataEntity != null) {
+                    dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
+                    eventDao.update(dataEntity)
+                }
+            }
+            FirebaseData.TYPE_CANCEL->{
+
+            }
+            FirebaseData.TYPE_MOVE->{
+
+            }
+        }
     }
 
 
