@@ -12,7 +12,10 @@ class SettingEntity {
 
     var name: String = "自己"
 
-    @PrimaryKey
+
     var firebaseCode: String = ""
+
+    @PrimaryKey
+    var id: Int = 1
 
 }

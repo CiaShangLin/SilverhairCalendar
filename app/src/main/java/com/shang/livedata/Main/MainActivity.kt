@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         emptyDataAdapter.setData(mutableListOf())
         emptyDataAdapter.setOnItemClickListener(object : EmptyDataAdapter.OnItemClickListener {
             override fun onItemClick(dataEntity: DataEntity) {
+                toast(dataEntity.event)
                 EditDialog.getInstance(type, dataEntity).show(supportFragmentManager, EditDialog.TAG)
             }
         })
@@ -143,11 +144,8 @@ class MainActivity : AppCompatActivity() {
         dataViewModel.getAllDataEntity().observe(this@MainActivity, object : Observer<MutableList<DataEntity>> {
             override fun onChanged(data: MutableList<DataEntity>) {
                 //清除後再增加　不然會重複蓋上去
-                var myDayView = MyDayView(
-                    this@MainActivity,
-                    data.map { it.calendarDay }.toHashSet()
-                )
-                calendarView.removeDecorator(myDayView)
+                calendarView.removeDecorators()
+                var myDayView = MyDayView(this@MainActivity, data.map { it.calendarDay }.toHashSet())
                 calendarView.addDecorator(myDayView)
 
                 //更新ＲｅｃｙｃｌｅｒＶｉｅｗ
@@ -167,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+
 
         //Recyclerview
         //ItemTouchHelper(dataAdapter.getSimpleCallback(dataViewModel)).attachToRecyclerView(recyclerview)

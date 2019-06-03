@@ -1,6 +1,7 @@
 package com.shang.livedata.Repository
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -80,6 +81,7 @@ class DataRepository {
                 var dataEntity = firebaseData.dataSnapshotToDataEntity(firebaseData.data)
                 if (dataEntity != null) {
                     dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode)
+
                     eventDao.delete(dataEntity)
                     return "事件刪除"
                 }
@@ -88,6 +90,7 @@ class DataRepository {
                 var dataEntity = firebaseData.dataSnapshotToDataEntity(firebaseData.data)
                 if (dataEntity != null) {
                     dataEntity.id = eventDao.getFirebaseCodeToId(dataEntity.firebaseCode) //Room的update是認primary key下去改的
+                    Log.d("TAG","${dataEntity.id}")
                     eventDao.update(dataEntity)
                     return "事件更新"
                 }

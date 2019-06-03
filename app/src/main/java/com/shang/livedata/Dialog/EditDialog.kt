@@ -61,12 +61,7 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         dataViewModel = ViewModelProviders.of(activity!!).get(DataViewModel::class.java)
         firebaseViewModel = ViewModelProviders.of(activity!!).get(FirebaseViewModel::class.java)
 
-        (arguments?.getParcelable(DATA) as DataEntity).let{
-            editNameEt.setText(it.name)
-            editEventEt.setText(it.event)
-            editTimeEt.setText("${it.hour}:${it.minute}")
-            editColorSp.setSelection(it.type)
-        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -165,4 +160,13 @@ class EditDialog : DialogFragment(), androidx.appcompat.widget.Toolbar.OnMenuIte
         toast("刪除成功")
     }
 
+    override fun onResume() {
+        super.onResume()
+        (arguments?.getParcelable(DATA) as DataEntity).let{
+            editNameEt.setText(it.name)
+            editEventEt.setText(it.event)
+            editTimeEt.setText("${it.hour}:${it.minute}")
+            editColorSp.setSelection(it.type)
+        }
+    }
 }

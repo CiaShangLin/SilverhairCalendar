@@ -36,11 +36,8 @@ class EmptyDataAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView
         /*this.dataList.clear()
         this.dataList.addAll(dataList)
         notifyItemRangeInserted(0, this.dataList.size)*/
-
         this.dataList=dataList.toMutableList()
         notifyDataSetChanged()
-
-
     }
 
     fun setEmptyView(view: View) {
